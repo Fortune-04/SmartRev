@@ -1,0 +1,6 @@
+.disable{
+    background-color: #ccc;
+    box-shadow: none;
+    opacity: 0.9;
+    pointer-events: none;
+}

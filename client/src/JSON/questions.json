@@ -1,0 +1,46 @@
+[
+    {
+        "question": "Which one is atom?",
+        "optionA": "Magnesium",
+        "optionB": "NaCl",
+        "optionC": "H2O",
+        "optionD": "NaOH",
+        "answer": "Magnesium"
+    },
+
+    {
+        "question": "What is atom?",
+        "optionA": "The base constructive structure of a matter",
+        "optionB": "Combination with two or more matter",
+        "optionC": "Charged particles",
+        "optionD": "Solid",
+        "answer": "The base constructive structure of a matter"
+    },
+
+    {
+        "question": "what is the charge of ion sulphate(SO4)?",
+        "optionA": "+1",
+        "optionB": "+2",
+        "optionC": "-1",
+        "optionD": "-2",
+        "answer": "-2"
+    },
+
+    {
+        "question": "What is cation charged?",
+        "optionA": "Neutral",
+        "optionB": "-",
+        "optionC": "+",
+        "optionD": "- and +",
+        "answer": "+"
+    },
+
+    {
+        "question": "Which one is the emperical fomular of magnesium oxid?",
+        "optionA": "MgO",
+        "optionB": "Mg2O",
+        "optionC": "Mg3O2",
+        "optionD": "MgO3",
+        "answer": "MgO"
+    }
+]
