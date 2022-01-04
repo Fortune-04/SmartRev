@@ -124,7 +124,7 @@ const Layout = ({children,setAuth}) => {
         setAuth(false)
     }
 
-
+    console.log("eleg");
     return(
         <div className={classes.root}>
             {/* app bar */}
