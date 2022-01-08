@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export default axios.create({
-    baseURL: "http://localhost:4400/video"
+    baseURL: "http://localhost:4400/quiz"
 })

@@ -48,7 +48,7 @@ const menuItems = [
     { 
       text: 'Video', 
       icon: <VideoLibrarySharpIcon color="secondary" />, 
-      path: '/videonav' 
+      path: '/videos' 
     },
 
     // { 
@@ -64,7 +64,7 @@ const menuItems = [
     { 
       text: 'Submission', 
       icon: <BackupRoundedIcon color="secondary" />, 
-      path: '/submission' 
+      path: '/submission/sublist' 
     },
 
 ];
@@ -124,7 +124,6 @@ const Layout = ({children,setAuth}) => {
         setAuth(false)
     }
 
-    console.log("eleg");
     return(
         <div className={classes.root}>
             {/* app bar */}

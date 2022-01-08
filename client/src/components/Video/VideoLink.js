@@ -45,22 +45,22 @@ import { VideoContext } from '../../context/VideoContext'
 
 // }
 
-const VideoLink = () => {
+const VideoLink = ({videos}) => {
 
-  const { videos, setVideo } = useContext(VideoContext);
+  // const { videos, setVideo } = useContext(VideoContext);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await VideoFinder.get("/")
-        setVideo(response.data.data.video)
-        console.log(response)
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    fetchData();
-  },[]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await VideoFinder.get("/")
+  //       setVideo(response.data.data.video)
+  //       console.log(response)
+  //     } catch (err) {
+  //       console.log(err)
+  //     }
+  //   }
+  //   fetchData();
+  // },[]);
 
   return (
     <div>

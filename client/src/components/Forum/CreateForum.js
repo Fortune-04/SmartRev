@@ -20,6 +20,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
+import Link from '@mui/material/Link';
 
 const useStyles = makeStyles({
     field: {
@@ -195,7 +196,8 @@ const CreateForum = () => {
                     {lists && lists.map((list) => (
                         <StyledTableRow key={list.forumid}>
                         <StyledTableCell component="th" scope="row">
-                            {list.title}
+                            
+                            <Link href={`http://localhost:3000/forum/description/${list.forumid}`} underline="hover" >{list.title}</Link>
                         </StyledTableCell>
                         <StyledTableCell align="center">{list.subject}</StyledTableCell>
                         <StyledTableCell align="center">{list.author}</StyledTableCell>

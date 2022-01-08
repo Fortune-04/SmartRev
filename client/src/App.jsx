@@ -14,12 +14,14 @@ import Home from "./routes/Home";
 import Main from "./routes/Main";
 import Profile from "./components/Profile/Profile";
 import Video from "./components/Video/Video";
+import Videos from "./components/Video/Videos"
 import VideoNav from "./components/Video/VideoNav";
 import VideoAdd from "./components/Video/VideoAdd";
 import Note from "./components/Note/Note";
 import NoteUpload from "./components/Note/UploadNote";
 import Notes from "./components/Note/Notes"
 import Quiz from "./components/Quiz/Quiz";
+import QuizList from "./components/Quiz/QuizList"
 import QuizAnswer from "./components/Quiz/AnswerQuiz";
 import QuizCreate from "./components/Quiz/CreateQuiz";
 import QuizSummary from './components/Quiz/QuizSummary';
@@ -36,6 +38,7 @@ import SubmissionSubmit from "./components/Submission/SubmissionFile";
 import SubmissionFile1 from "./components/Submission/SubmissionFile1";
 import SubDecs from "./components/Submission/SubDecs";
 import Temp from "./Temp";
+import Temp2 from "./Temp2";
 
 const theme = createTheme({
     palette: {
@@ -103,12 +106,14 @@ const App = () => {
                             <Route exact path="/signup" render={props => !isAuthenticated? <SignUp {...props} setAuth={setAuth}/>:<Redirect to="/loginform"/>}/>
                             <Route exact path="/videonav" component={VideoNav}/>
                             <Route exact path="/videoadd" component={VideoAdd}/>
+                            <Route exact path="/videos" component={Videos}/>
                             <Route exact path="/quiz" component={Quiz}/>
+                            <Route exact path="/quiz/quizlist" component={QuizList}/>
                             <Route exact path="/quiz/answer" component={QuizAnswer}/>
                             <Route exact path="/quiz/create" component={QuizCreate}/>
                             <Route exact path="/quiz/quizsummary" component={QuizSummary}/>
-                            <Route exact path="/forum" component={props => isAuthenticated? <ForumCreate {...props} setAuth={setAuth}/> : <Redirect to="/forum/create"/>}/>
-                            <Route exact path="/forum/description" component={Forum}/>
+                            <Route exact path="/forum" component={props => isAuthenticated? <ForumCreate {...props} setAuth={setAuth}/> : <Redirect to="/loginform"/>}/>
+                            <Route exact path="/forum/description/:id" component={Forum}/>
                             <Route exact path="/flashcard" component={Flashcard}/>
                             <Route exact path="/flashcard/create" component={FlashcardCreate}/>
                             <Route exact path="/flashcard/view" component={FlashcardView}/>
@@ -119,6 +124,7 @@ const App = () => {
                             <Route exact path="/submission/submitfile" component={props => isAuthenticated? <SubmissionSubmit {...props} setAuth={setAuth}/> : <Redirect to="/loginform"/>}/>
                             <Route exact path="/submission/submissionfile" component={SubmissionFile1}/>
                             <Route exact path="/submission/subdecs" component={SubDecs}/>
+                            <Route exact path="/temp2" component={Temp2}/>
                         </Layout>
                     </Switch>
                 </Router>

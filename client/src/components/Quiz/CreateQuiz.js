@@ -59,6 +59,8 @@ const CreateQuiz = () =>{
         setQuestList(list);
     }
 
+    console.log(questList);
+
     return(
         <Container size="sm">
 

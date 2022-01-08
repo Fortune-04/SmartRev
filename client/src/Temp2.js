@@ -7,24 +7,22 @@ import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-
-const Flashcard = () =>{
+const Quiz = () => {
 
     let history = useHistory()
 
     const handleClick = () => {
-        history.push(`/flashcard/create`)
+        history.push(`/quiz/quizlist`)
     };
-    
-    return (
 
-        <Grid container spacing={3}>
+    return (
+        <Grid container spacing={2}>
             <Grid item xs={3}>
                 <Card sx={{ maxWidth: 345 }} onClick={()=> handleClick()}>
                     <CardMedia
                         component="img"
                         height="200"
-                        image="math-card-background.jpg"
+                        image="background1.png"
                         alt="mathematics"
                     />
                     <CardContent>
@@ -39,7 +37,7 @@ const Flashcard = () =>{
                     <CardMedia
                         component="img"
                         height="200"
-                        image="physics-card-background.jpg"
+                        image="background1.png"
                         alt="physics"
                     />
                     <CardContent>
@@ -54,7 +52,7 @@ const Flashcard = () =>{
                     <CardMedia
                         component="img"
                         height="200"
-                        image="chem-card-background.png"
+                        image="background1.png"
                         alt="chemistry"
                     />
                     <CardContent>
@@ -69,7 +67,7 @@ const Flashcard = () =>{
                     <CardMedia
                         component="img"
                         height="200"
-                        image="biology-card-background.jpg"
+                        image="background1.png"
                         alt="biology"
                     />
                     <CardContent>
@@ -79,9 +77,8 @@ const Flashcard = () =>{
                     </CardContent>
                 </Card>
             </Grid>
-        </Grid>
-    )
-
+        </Grid> 
+    );
 }
-
-export default Flashcard;
+ 
+export default Quiz;

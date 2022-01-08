@@ -1,29 +1,58 @@
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from 'react';
+import { useHistory } from 'react-router';
+import MainStudent from "./MainStudent";
+import MainTeacher from "./MainTeacher";
+import Temp3 from "../../Temp3";
 
-const Quiz = () =>{
-    
+const Quiz = () => {
+
+    let history = useHistory();
+    const [role,setRole] = useState();
+    const [id, setId] = useState();
+
+    const handleClick = () => {
+        history.push(`/quiz/quizlist`)
+    };
+
+    useEffect(() =>{
+        const getProfile = async () => {
+            try {
+              const res = await fetch("http://localhost:4400/profile", {
+                method: "GET",
+                headers: { token: localStorage.token }
+              });
+        
+              const parseData = await res.json();
+              setRole(parseData.data.profile[0].usertype);
+              setId(parseData.data.profile[0].userid);
+
+            } catch (err) {
+              console.error(err.message);
+            }
+        };
+
+        getProfile();
+    }, []);
+
+    const SelectRole = () => {
+        if(role === "student"){
+            return 1;
+        }else{
+            return 2;
+        }
+    };
+
     return (
-        <div className="container">
-            
-            <Link to='/quiz/answer'>
-                <div className="card" style={{ width: '18rem' }}>
-                    <div className="card-body">
-                        <h5 className="card-title">Answer Quiz</h5>
-                    </div>
-                </div>
-            </Link>
-
-            <Link to='/quiz/create'>
-                <div className="card" style={{ width: '18rem' }}>
-                    <div className="card-body">
-                        <h5 className="card-title">Create Quiz</h5>
-                    </div>
-                </div>
-            </Link>
-
-        </div>
-    )
-
+        <>
+        {SelectRole() === 1 && (
+            <MainStudent handleClick={handleClick}/>
+        )}
+        {SelectRole() === 2 && (
+            // <MainTeacher/>
+            <Temp3/>
+        )}
+        </>
+    );
 }
-
+ 
 export default Quiz;

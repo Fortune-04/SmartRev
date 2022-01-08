@@ -61,7 +61,7 @@ app.get("/profile", authorization, async (req, res) =>{
     console.log(req.user);
 
     try{
-        const results = await db.query("SELECT * FROM student WHERE studentid = $1", [req.user]);
+        const results = await db.query("SELECT * FROM users WHERE userid = $1", [req.user]);
         res.status(200).json({
             status: "success",
             data: {
@@ -97,13 +97,13 @@ app.post("/api/v1/profile", async(req, res)=>{
 });
 
 // Update Profile
-app.put("/api/v1/profile/:id", async (req, res) => {
+app.put("/profile/:id", async (req, res) => {
     console.log(req.params.id);
     console.log(req.body)
 
     try{
-        const results = await db.query("UPDATE student SET username = $1, fullname = $2, email = $3, phonenumber = $4, school = $5 where studentid = $6 returning *", 
-        [req.body.username, req.body.fullname, req.body.email, req.body.phonenumber, req.body.school, req.params.id]);
+        const results = await db.query("UPDATE users SET fullname = $1, email = $2, phonenumber = $3, school = $4 where userid = $5 returning *", 
+        [req.body.fullname, req.body.email, req.body.phonenumber, req.body.school, req.body.id]);
 
         res.status(200).json({
             status: "success",
@@ -118,13 +118,13 @@ app.put("/api/v1/profile/:id", async (req, res) => {
     
 });
 
-app.put("/profile", authorization, async (req, res) => {
+app.put("/profile/update", async (req, res) => {
     console.log(req.body)
-    console.log(req.user)
+    // console.log(req.user)
 
     try{
-        const results = await db.query("UPDATE student SET username = $1, fullname = $2, email = $3, phonenumber = $4, school = $5 where studentid = $6 returning *", 
-        [req.body.username, req.body.fullname, req.body.email, req.body.phonenumber, req.body.school, req.user]);
+        const results = await db.query("UPDATE users SET fullname = $1, email = $2, phonenumber = $3, school = $4 WHERE userid = $5 returning *", 
+        [req.body.fullname, req.body.email, req.body.phonenumber, req.body.school, req.body.id]);
 
         res.status(200).json({
             status: "success",
@@ -152,12 +152,14 @@ app.delete("/api/v1/profile/:id", async (req, res) => {
     }
     
 });
+
 //////////////////////////////////////Quiz\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 // Create a quiz
-app.post("/quiz/create", async(req, res)=>{
+app.post("/quiz/create", async(req, res)=> {
+
     console.log(req.body);
-    subject="physics"
+    subject="physics";
 
     try{
         const results = await db.query("INSERT INTO quiz(question) values ($1)", [req.body])
@@ -175,10 +177,29 @@ app.post("/quiz/create", async(req, res)=>{
 
 });
 
+// Get a quiz
+app.get("/quiz/display", async(req, res) => {
+
+    // const subject = "chemistry"
+    try {
+        const results = await db.query("SELECT * FROM quiz where quizid = 10");
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                quiz: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
 //////////////////////////////////////Video\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 // Get all video
-app.get("/api/v1/video", async (req, res)=>{
+app.get("/video", async (req, res)=>{
 
     try{
     const results = await db.query("SELECT * FROM video")
@@ -196,7 +217,7 @@ app.get("/api/v1/video", async (req, res)=>{
 });
 
 // Create a video
-app.post("/api/v1/video", async(req, res)=>{
+app.post("/video", async(req, res)=>{
     console.log(req.body);
     subject="physics"
 
@@ -217,7 +238,7 @@ app.post("/api/v1/video", async(req, res)=>{
 });
 
 // Delete a video
-app.delete("/api/v1/video/:id", async (req, res) => {
+app.delete("/video/:id", async (req, res) => {
 
     try{
         const results = db.query("DELETE FROM video where videoid = $1", [req.params.id])
@@ -229,6 +250,84 @@ app.delete("/api/v1/video/:id", async (req, res) => {
     }
     
 });
+
+// Get mathematics video
+app.get("/video/display/mathematics", async(req, res) => {
+
+    const subject = "mathematics"
+    try {
+        const results = await db.query("SELECT * FROM video where subject = $1", [subject]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                video: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get physics video
+app.get("/video/display/physics", async(req, res) => {
+
+    const subject = "physics"
+    try {
+        const results = await db.query("SELECT * FROM video where subject = $1", [subject]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                video: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get chemistry video
+app.get("/video/display/chemistry", async(req, res) => {
+
+    const subject = "chemistry"
+    try {
+        const results = await db.query("SELECT * FROM video where subject = $1", [subject]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                video: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get biology video
+app.get("/video/display/biology", async(req, res) => {
+
+    const subject = "biology"
+    try {
+        const results = await db.query("SELECT * FROM video where subject = $1", [subject]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                video: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+
 
 ////////////////////////////////////////FLASHCARD\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 // Create a flashcard
@@ -296,6 +395,25 @@ app.get("/forum/display", async(req, res) => {
 
     try {
         const results = await db.query("SELECT * FROM forum");
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                forum: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get a forum
+app.get("/forum/description/:id", async(req, res) => {
+    console.log(req.params.id);
+
+    try {
+        const results = await db.query("SELECT * FROM forum where forumid = $1",[req.params.id]);
         console.log(results);
         res.status(200).json({
             status: "success",
@@ -435,7 +553,7 @@ app.get("/submission/display/chemistry", async(req, res) => {
 // Get a biology submission
 app.get("/submission/display/biology", async(req, res) => {
 
-    const subject = "physics"
+    const subject = "biology"
     try {
         const results = await db.query("SELECT * FROM submission where subject = $1", [subject]);
         console.log(results);
@@ -460,7 +578,7 @@ app.post("/register",validInfo, async (req, res) => {
     try {
         
         //Destructure the req.body (username, fullname, email, password, phonenumber, school)
-        const { username, fullname, email, password, phonenumber, school} = req.body;
+        const { username, fullname, email, password, phonenumber, school, type} = req.body;
 
         //Check if user exist (if user exist then throw error)
         const user = await db.query("SELECT * FROM student WHERE email = $1", [email]);
@@ -475,10 +593,10 @@ app.post("/register",validInfo, async (req, res) => {
         const bcryptPassword = await bcrypt.hash (password, salt);
 
         //Enter a new user inside the database
-        const newUser = await db.query("INSERT INTO student (username,fullname,email,password,phonenumber,school) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",[username, fullname, email, bcryptPassword, phonenumber, school]);
+        const newUser = await db.query("INSERT INTO users (username,fullname,email,password,phonenumber,school, usertype) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",[username, fullname, email, bcryptPassword, phonenumber, school, type]);
 
         //Generating jwt token
-        const token = jwtGenerator(newUser.rows[0].studentid);
+        const token = jwtGenerator(newUser.rows[0].userid);
 
         res.json({ token });
 
@@ -500,7 +618,7 @@ app.post("/login", validInfo, async(req, res) => {
         const {email, password} = req.body;
 
         //Check if user doesnt exist(if not then we throw error)
-        const user = await db.query("SELECT * FROM student WHERE email = $1",[email]);
+        const user = await db.query("SELECT * FROM users WHERE email = $1",[email]);
 
         if(user.rows.length === 0){
             return res.status(401).json("Password or Email is incorrect");
@@ -514,7 +632,7 @@ app.post("/login", validInfo, async(req, res) => {
         }
 
         //Give them the jwt token
-        const token = jwtGenerator(user.rows[0].studentid);
+        const token = jwtGenerator(user.rows[0].userid);
         
         res.json({token});
         
