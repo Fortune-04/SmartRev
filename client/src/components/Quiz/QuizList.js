@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import AnswerQuiz from './AnswerQuiz';
+import Quizes from './Quizes';
+import Quizes2 from './Quizes2';
 
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -76,12 +78,14 @@ const QuizList = () => {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Public" {...a11yProps(0)} />
+          <Tab label="General" {...a11yProps(0)} />
           <Tab label="Class" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <AnswerQuiz/>
+        {/* <AnswerQuiz/> */}
+        {/* <Quizes/> */}
+        <Quizes2/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <AnswerQuiz/>

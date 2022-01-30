@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
-import Box from '@mui/material/Box'
+import Box from '@mui/material/Box';
 
 import questions from '../../JSON/questions.json';
 import isEmpty from '../../utils/is-empty';

@@ -75,6 +75,74 @@ app.get("/profile", authorization, async (req, res) =>{
 
 });
 
+//Get a profile base on code and subject
+app.get("/profile/:code/:subject", async (req, res) =>{
+    console.log(req.params.code);
+    console.log(req.params.subject);
+
+    if(req.params.subject === "math"){
+        try{
+            const results = await db.query(`SELECT * FROM users WHERE math = $1`, [req.params.code]);
+            res.status(200).json({
+                status: "success",
+                data: {
+                    profile: results.rows,
+                },
+            });
+    
+        }catch (err){
+            console.log(err);
+        }
+    }
+    else if(req.params.subject === "physics"){
+        try{
+            const results = await db.query(`SELECT * FROM users WHERE physics = $1`, [req.params.code]);
+            res.status(200).json({
+                status: "success",
+                data: {
+                    profile: results.rows,
+                },
+            });
+    
+        }catch (err){
+            console.log(err);
+        }
+    }
+    else if(req.params.subject === "chemistry"){
+        try{
+            const results = await db.query(`SELECT * FROM users WHERE chemistry = $1`, [req.params.code]);
+            res.status(200).json({
+                status: "success",
+                data: {
+                    profile: results.rows,
+                },
+            });
+    
+        }catch (err){
+            console.log(err);
+        }
+    }
+    else if(req.params.subject === "biology"){
+        try{
+            const results = await db.query(`SELECT * FROM users WHERE biology = $1`, [req.params.code]);
+            res.status(200).json({
+                status: "success",
+                data: {
+                    profile: results.rows,
+                },
+            });
+    
+        }catch (err){
+            console.log(err);
+        }
+    }else{
+        console.log("No Student");
+    }
+    
+
+});
+
+
 // Create a profile
 app.post("/api/v1/profile", async(req, res)=>{
     console.log(req.body);
@@ -97,8 +165,7 @@ app.post("/api/v1/profile", async(req, res)=>{
 });
 
 // Update Profile
-app.put("/profile/:id", async (req, res) => {
-    console.log(req.params.id);
+app.put("/profile/update", async (req, res) => {
     console.log(req.body)
 
     try{
@@ -118,26 +185,26 @@ app.put("/profile/:id", async (req, res) => {
     
 });
 
-app.put("/profile/update", async (req, res) => {
-    console.log(req.body)
-    // console.log(req.user)
+// app.put("/profile/update", async (req, res) => {
+//     console.log(req.body)
+//     // console.log(req.user)
 
-    try{
-        const results = await db.query("UPDATE users SET fullname = $1, email = $2, phonenumber = $3, school = $4 WHERE userid = $5 returning *", 
-        [req.body.fullname, req.body.email, req.body.phonenumber, req.body.school, req.body.id]);
+//     try{
+//         const results = await db.query("UPDATE users SET fullname = $1, email = $2, phonenumber = $3, school = $4 WHERE userid = $5 returning *", 
+//         [req.body.fullname, req.body.email, req.body.phonenumber, req.body.school, req.body.id]);
 
-        res.status(200).json({
-            status: "success",
-            data: {
-                profile: results.rows[0],
-            },
-        });
+//         res.status(200).json({
+//             status: "success",
+//             data: {
+//                 profile: results.rows[0],
+//             },
+//         });
 
-    }catch(err){
-        console.log(err);
-    }
+//     }catch(err){
+//         console.log(err);
+//     }
     
-});
+// });
 
 // Delete profile
 app.delete("/api/v1/profile/:id", async (req, res) => {
@@ -159,15 +226,16 @@ app.delete("/api/v1/profile/:id", async (req, res) => {
 app.post("/quiz/create", async(req, res)=> {
 
     console.log(req.body);
-    subject="physics";
 
     try{
-        const results = await db.query("INSERT INTO quiz(question) values ($1)", [req.body])
+        const results = await db.query("INSERT INTO quiz (userid, title, class, subject, nameclass) values ($1, $2, $3, $4, $5) RETURNING *", 
+        [req.body.id, req.body.title, req.body.code, req.body.subject, req.body.nameclass]);
+        
         console.log(results);
         res.status(201).json({
             status: "success",
             data: {
-                video: results.rows[0],
+                quiz: results.rows[0],
             },
         });
 
@@ -177,12 +245,13 @@ app.post("/quiz/create", async(req, res)=> {
 
 });
 
-// Get a quiz
-app.get("/quiz/display", async(req, res) => {
 
-    // const subject = "chemistry"
+// Get certain quiz
+app.get("/quiz/display/:id", async(req, res) => {
+
+    console.log(req.params.id)
     try {
-        const results = await db.query("SELECT * FROM quiz where quizid = 10");
+        const results = await db.query("SELECT * FROM quiz WHERE userid = $1",[req.params.id]);
         console.log(results);
         res.status(200).json({
             status: "success",
@@ -194,6 +263,110 @@ app.get("/quiz/display", async(req, res) => {
         console.log(err);
     }
 
+});
+
+// Get a quiz with quiz id
+app.get("/quiz/edit/:qid", async(req, res) => {
+
+    console.log(req.params.qid)
+    try {
+        const results = await db.query("SELECT * FROM quiz WHERE quizid = $1",[req.params.qid]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                quiz: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+//Update quiz
+app.put("/quiz/update", async (req, res) => {
+
+    try{
+        const results = await db.query("UPDATE quiz SET title=$1, class=$2, subject=$3, nameclass=$4 WHERE quizid=$5", 
+        [req.body.title, req.body.class, req.body.subject, req.body.nameclass, req.body.id]);
+        console.log(results);
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                quiz: results.rows[0],
+            },
+        });
+
+    }catch(err){
+        console.log(err);
+    }
+    
+});
+
+// Create a question
+app.post("/quiz/create/question", async(req, res)=> {
+
+    console.log(req.body);
+    // const quizid = 5;
+
+    try{
+        const results = await db.query("INSERT INTO question (quizid, quest, option1, option2, option3, option4, answer) values ($1, $2, $3, $4, $5, $6, $7)", 
+        [req.body.quizid, req.body.quest.quest, req.body.quest.option1, req.body.quest.option2, req.body.quest.option3, req.body.quest.option4, req.body.quest.answer]);
+
+        console.log(results);
+        res.status(201).json({
+            status: "success",
+            data: {
+                question: results.rows[0],
+            },
+        });
+
+    }catch(err){
+        console.log(err)
+    }
+
+});
+
+// Get a quiz with quiz id
+app.get("/quiz/question/:qid", async(req, res) => {
+
+    console.log(req.params.qid)
+    try {
+        const results = await db.query("SELECT * FROM question WHERE quizid = $1",[req.params.qid]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                question: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+//Update question
+app.put("/quiz/question/update", async (req, res) => {
+
+    try{
+        const results = await db.query("UPDATE question SET quest=$1, option1=$2, option2=$3, option3=$4, option4=$5, answer=$6 WHERE quizid=$7", 
+        [req.body.quest.quest, req.body.quest.option1, req.body.quest.option2, req.body.quest.option3, req.body.quest.option4, req.body.quest.answer, req.body.id]);
+        console.log(results);
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                quiz: results.rows[0],
+            },
+        });
+
+    }catch(err){
+        console.log(err);
+    }
+    
 });
 
 //////////////////////////////////////Video\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -216,13 +389,33 @@ app.get("/video", async (req, res)=>{
 
 });
 
+// Get certain video
+app.get("/video/:info", async (req, res)=>{
+
+    console.log(req.params.info)
+
+    try{
+        const results = await db.query("SELECT * FROM video WHERE class=$1", [req.params.info])
+        // console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                video: results.rows,
+            },
+        });
+    }catch(err){
+        console.log(err);
+    }
+
+});
+
 // Create a video
 app.post("/video", async(req, res)=>{
     console.log(req.body);
-    subject="physics"
+    // subject="physics"
 
     try{
-        const results = await db.query("INSERT INTO video (link, title, subject) values ($1,$2,$3) returning *", [req.body.link, req.body.title, subject])
+        const results = await db.query("INSERT INTO video (title, link, subject, class, nameclass) values ($1,$2,$3,$4,$5) returning *", [req.body.title, req.body.link, req.body.subject, req.body.code, req.body.nameclass])
         console.log(results);
         res.status(201).json({
             status: "success",
@@ -330,12 +523,12 @@ app.get("/video/display/biology", async(req, res) => {
 
 
 ////////////////////////////////////////FLASHCARD\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-// Create a flashcard
+// Create a Flashcard
 app.post("/flashcard", async(req, res) => {
 
     try {
-        const {studentid, subject, content} = req.body;
-        const results = await db.query("INSERT INTO flashcard (studentid, subject, content) values ($1,$2,$3) returning *", [studentid,subject,content]);
+        const {userid, subject, content} = req.body;
+        const results = await db.query("INSERT INTO flashcard (userid, subject, content) values ($1,$2,$3) returning *", [userid,subject,content]);
         console.log(results);
         
     } catch (err) {
@@ -345,10 +538,28 @@ app.post("/flashcard", async(req, res) => {
 });
 
 // Get all Flashcard
-app.get("/flashcard/display", async(req, res) => {
+app.get("/flashcard/display/all", async(req, res) => {
 
     try {
         const results = await db.query("SELECT * FROM flashcard");
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                flashcard: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get subject flashcards
+app.get("/flashcard/display/:subject/:id", async(req, res) => {
+
+    try {
+        const results = await db.query("SELECT * FROM flashcard WHERE userid = $1 AND subject = $2", [req.params.id, req.params.subject]);
         console.log(results);
         res.status(200).json({
             status: "success",
@@ -375,13 +586,14 @@ app.delete("/flashcard/:id", async (req, res) => {
     }
     
 });
-////////////////////////////////////////FLASHCARD\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+////////////////////////////////////////Forum\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 // Create a Forum
 app.post("/forum/create", async(req, res) => {
 
     try {
-        const results = await db.query("INSERT INTO forum (title, details, subject, author) values ($1,$2,$3,$4)", [req.body.title, req.body.details, req.body.subject, req.body.author])
+        const results = await db.query("INSERT INTO forum (title, details, author, date, class, nameclass, subject) values ($1,$2,$3,$4,$5,$6,$7)", [req.body.title, req.body.details, req.body.author, req.body.todayDate, req.body.code, req.body.nameclass, req.body.subject])
         console.log(results);
         
     } catch (err) {
@@ -395,6 +607,26 @@ app.get("/forum/display", async(req, res) => {
 
     try {
         const results = await db.query("SELECT * FROM forum");
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                forum: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get certain forum
+app.get("/forum/display/:info", async(req, res) => {
+
+    console.log(req.params.info)
+
+    try {
+        const results = await db.query("SELECT * FROM forum WHERE class = $1",[req.params.info]);
         console.log(results);
         res.status(200).json({
             status: "success",
@@ -427,13 +659,69 @@ app.get("/forum/description/:id", async(req, res) => {
 
 });
 
+// Update a forum
+app.put("/forum/update/:id", async (req, res) => {
+    console.log(req.params.id);
+    console.log(req.body.replies)
+
+    try{
+        const results = await db.query("UPDATE test SET reply = $1 WHERE forumid = $2", 
+        [req.body.replies, req.body.id]);
+        console.log(results);
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                forum: results.rows[0],
+            },
+        });
+
+    }catch(err){
+        console.log(err);
+    }
+    
+});
+
+// Create a reply
+app.post("/forum/reply", async(req, res) => {
+
+    try {
+        const results = await db.query("INSERT INTO replyforum (userid, forumid, name, reply, date, time) values ($1,$2,$3,$4,$5,$6)", [req.body.userid, req.body.id, req.body.myreply.author, req.body.myreply.reply, req.body.myreply.date, req.body.myreply.time])
+        console.log(results);
+        
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get certain reply
+app.get("/forum/reply/:id", async(req, res) => {
+    console.log(req.params.id);
+
+    try {
+        const results = await db.query("SELECT * FROM replyforum where forumid = $1",[req.params.id]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                reply: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
 /////////////////////////////////////////////Note\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 // Create a note
 app.post("/note/create", async(req, res) => {
 
+    const name = "file"
     try {
-        const results = await db.query("INSERT INTO note (note) values ($1)", [req.body.url])
+        const results = await db.query("INSERT INTO note (userid, note, filename) values ($1, $2, $3)", [req.body.id,req.body.url, name])
         console.log(req.body.url);
         
     } catch (err) {
@@ -460,13 +748,64 @@ app.get("/note/display", async(req, res) => {
 
 });
 
-/////////////////////////////////////////////Note\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+// Get certain note
+app.get("/note/display/:id", async(req, res) => {
+    console.log(req.params.id)
+
+    try {
+        const results = await db.query("SELECT * FROM note WHERE userid=$1",[req.params.id]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                note: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get certain note with code
+app.get("/note/class/display/:code", async(req, res) => {
+
+    try {
+        const results = await db.query("SELECT * FROM note WHERE class=$1",[req.params.code]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                note: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Delete a note
+app.delete("/note/:id", async (req, res) => {
+
+    try{
+        const results = db.query("DELETE FROM note WHERE noteid = $1", [req.params.id])
+        res.status(204).json({
+            status: "success",
+        });
+    }catch(err){
+        console.log(err);
+    }
+    
+});
+
+/////////////////////////////////////////////Submission\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 // Create a submission
 app.post("/submission/create", async(req, res) => {
 
     try {
-        const results = await db.query("INSERT INTO submission (title, date, subject) values ($1,$2,$3)", [req.body.title, req.body.date, req.body.subject]);
+        const results = await db.query("INSERT INTO submission (userid, title, subject, class, nameclass, duedate) values ($1,$2,$3,$4,$5,$6)", [req.body.id, req.body.title, req.body.subject, req.body.code, req.body.nameclass, req.body.date]);
         console.log(results);
         
     } catch (err) {
@@ -480,6 +819,42 @@ app.get("/submission/display", async(req, res) => {
 
     try {
         const results = await db.query("SELECT * FROM submission");
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                sub: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get certain submissions
+app.get("/submission/:info", async(req, res) => {
+
+    try {
+        const results = await db.query("SELECT * FROM submission WHERE class=$1", [req.params.info]);
+        // console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                sub: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get a submission
+app.get("/submission/dis/:sid", async(req, res) => {
+
+    try {
+        const results = await db.query("SELECT * FROM submission WHERE subid = $1", [req.params.sid]);
         console.log(results);
         res.status(200).json({
             status: "success",
@@ -569,6 +944,197 @@ app.get("/submission/display/biology", async(req, res) => {
 
 });
 
+//Create submission in submission list
+app.post("/submission/submissionlist", async(req, res) => {
+
+    try {
+        const results = await db.query("INSERT INTO submissionlist (subid, userid, fullname, file, filename) values ($1,$2,$3,$4,$5)", [req.body.sid, req.body.id, req.body.fullname, req.body.url, req.body.filename]);
+        console.log(results);
+        
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get certain submission from submission list
+app.get("/submission/submissionlist/:subid", async(req, res) => {
+
+    try {
+        const results = await db.query("SELECT * FROM submissionlist WHERE subid = $1", [req.params.subid]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                sub: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get a submission from submission list
+app.get("/submission/submissionlist/:sid/:id", async(req, res) => {
+
+    console.log(req.params.sid)
+    console.log(req.params.id)
+
+    try {
+        const results = await db.query("SELECT * FROM submissionlist WHERE subid = $1 AND userid = $2", [req.params.sid, req.params.id]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                sub: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+/////////////////////////////////////////////Submission\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+// Create a class
+app.post("/class/create", async(req, res) => {
+
+    try {
+        const results = await db.query("INSERT INTO class (userid, name, code, subject) values ($1,$2,$3,$4)", [req.body.id, req.body.name, req.body.code, req.body.subject]);
+        console.log(results);
+        
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get a class by code
+app.get("/class/find/:code", async(req, res) => {
+    console.log(req.params.code);
+
+    try {
+        const results = await db.query("SELECT * FROM class WHERE code = $1", [req.params.code]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                class: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Get a class by id
+app.get("/class/find/code/:id", async(req, res) => {
+    console.log(req.params.id);
+
+    try {
+        const results = await db.query("SELECT * FROM class WHERE userid = $1", [req.params.id]);
+        console.log(results);
+        res.status(200).json({
+            status: "success",
+            data: {
+                class: results.rows,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+// Update math code at user profile
+app.put("/profile/code/mathematics/:id", async (req, res) => {
+    console.log(req.params.id);
+    console.log(req.body)
+
+    try{
+        const results = await db.query("UPDATE users SET math = $1 WHERE userid = $2 returning *", 
+        [req.body.code, req.params.id]);
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                profile: results.rows[0],
+            },
+        });
+
+    }catch(err){
+        console.log(err);
+    }
+    
+});
+
+// Update physics code at user profile
+app.put("/profile/code/physics/:id", async (req, res) => {
+    console.log(req.params.id);
+    console.log(req.body)
+
+    try{
+        const results = await db.query("UPDATE users SET physics = $1 WHERE userid = $2 returning *", 
+        [req.body.code, req.params.id]);
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                profile: results.rows[0],
+            },
+        });
+
+    }catch(err){
+        console.log(err);
+    }
+    
+});
+
+// Update chemistry code at user profile
+app.put("/profile/code/chemistry/:id", async (req, res) => {
+    console.log(req.params.id);
+    console.log(req.body)
+
+    try{
+        const results = await db.query("UPDATE users SET chemistry = $1 WHERE userid = $2 returning *", 
+        [req.body.code, req.params.id]);
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                profile: results.rows[0],
+            },
+        });
+
+    }catch(err){
+        console.log(err);
+    }
+    
+});
+
+// Update biology code at user profile
+app.put("/profile/code/biology/:id", async (req, res) => {
+    console.log(req.params.id);
+    console.log(req.body)
+
+    try{
+        const results = await db.query("UPDATE users SET biology = $1 WHERE userid = $2 returning *", 
+        [req.body.code, req.params.id]);
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                profile: results.rows[0],
+            },
+        });
+
+    }catch(err){
+        console.log(err);
+    }
+    
+});
 
 /////////////////////////////////////////////Authentication\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 // app.use("/auth", require("./routes/jwtAuth"));

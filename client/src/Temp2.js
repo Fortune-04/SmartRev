@@ -1,84 +1,63 @@
-import React from 'react';
-import { useHistory } from 'react-router';
+//Temp2 for notes
+import React, { useState, useEffect } from 'react';
+import ClassFinder from './apis/ClassFinder';
 
+//Material UI
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
 
-const Quiz = () => {
+const Temp2 = ({id}) => {
 
-    let history = useHistory()
+    //Data
+    const [userclasses, setUserclasses] = useState();
 
-    const handleClick = () => {
-        history.push(`/quiz/quizlist`)
-    };
+    useEffect(() => {
+
+        const getInfo = async () => {
+          try {
+          const response = await ClassFinder.get(`/find/code/${id}`)
+          setUserclasses(response.data.data.class);
+          } catch (err) {
+              console.error(err.message);
+          }
+        };
+    
+        if(id){
+          getInfo();
+        }
+    
+    }, [id]);
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={3}>
-                <Card sx={{ maxWidth: 345 }} onClick={()=> handleClick()}>
-                    <CardMedia
-                        component="img"
-                        height="200"
-                        image="background1.png"
-                        alt="mathematics"
-                    />
-                    <CardContent>
-                        <Typography variant="h5">
-                            Mathematics
-                        </Typography>
-                    </CardContent>
-                </Card>
+        <Container size="sm">
+            <Grid container spacing={3}>
+                {userclasses && userclasses.map(userclass => (
+                    <Grid item xs={3}>
+                    <Link href={`http://localhost:3000/note/classtc/${userclass.code}`} underline="none">
+                    <Card key={userclass.classid} sx={{ maxWidth: 345 }} >
+                        <CardMedia
+                            component="img"
+                            height="200"
+                            image="math-card-background.jpg"
+                            alt="mathematics"
+                        />
+                        <CardContent>
+                            <Typography variant="h5">
+                                {userclass.name}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                    </Link>
+                    </Grid>
+                ))}
             </Grid>
-            <Grid item xs={3}>
-                <Card sx={{ maxWidth: 345 }} onClick={()=> handleClick()}>
-                    <CardMedia
-                        component="img"
-                        height="200"
-                        image="background1.png"
-                        alt="physics"
-                    />
-                    <CardContent>
-                        <Typography variant="h5">
-                            Physics
-                        </Typography>
-                    </CardContent>
-                </Card>
-            </Grid>
-            <Grid item xs={3}>
-                <Card sx={{ maxWidth: 345 }} onClick={()=> handleClick()}>
-                    <CardMedia
-                        component="img"
-                        height="200"
-                        image="background1.png"
-                        alt="chemistry"
-                    />
-                    <CardContent>
-                        <Typography variant="h5">
-                            Chemistry
-                        </Typography>
-                    </CardContent>
-                </Card>
-            </Grid>
-            <Grid item xs={3}>
-                <Card sx={{ maxWidth: 345 }} onClick={()=> handleClick()}>
-                    <CardMedia
-                        component="img"
-                        height="200"
-                        image="background1.png"
-                        alt="biology"
-                    />
-                    <CardContent>
-                        <Typography variant="h5">
-                            Biology
-                        </Typography>
-                    </CardContent>
-                </Card>
-            </Grid>
-        </Grid> 
+        </Container>
     );
 }
  
-export default Quiz;
+export default Temp2;

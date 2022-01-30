@@ -3,10 +3,18 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
 
 const MainStudent = ({handleClick}) => {
     return ( 
     
+        <Container>
+        <Box
+            display="flex" 
+            height={700} 
+        >
+            <Box m="auto">
     <Grid container spacing={3}>
         <Grid item xs={3}>
             <Card sx={{ maxWidth: 345 }} onClick={()=> handleClick()}>
@@ -16,10 +24,16 @@ const MainStudent = ({handleClick}) => {
                     image="math-card-background.jpg"
                     alt="mathematics"
                 />
-                <CardContent>
-                    <Typography variant="h5">
-                        Mathematics
-                    </Typography>
+                <CardContent >
+                    <Box
+                        display="flex"  
+                    >
+                        <Box m="auto">
+                            <Typography variant="h5">
+                                Mathematics
+                            </Typography>
+                        </Box>
+                    </Box>
                 </CardContent>
             </Card>
         </Grid>
@@ -32,9 +46,15 @@ const MainStudent = ({handleClick}) => {
                     alt="physics"
                 />
                 <CardContent>
-                    <Typography variant="h5">
-                        Physics
-                    </Typography>
+                    <Box
+                        display="flex"  
+                    >
+                        <Box m="auto">
+                            <Typography variant="h5">
+                                Physics
+                            </Typography>
+                        </Box>
+                    </Box>
                 </CardContent>
             </Card>
         </Grid>
@@ -47,9 +67,15 @@ const MainStudent = ({handleClick}) => {
                     alt="chemistry"
                 />
                 <CardContent>
-                    <Typography variant="h5">
-                        Chemistry
-                    </Typography>
+                    <Box
+                        display="flex"  
+                    >
+                        <Box m="auto">
+                            <Typography variant="h5">
+                                Chemistry
+                            </Typography>
+                        </Box>
+                    </Box>
                 </CardContent>
             </Card>
         </Grid>
@@ -62,13 +88,23 @@ const MainStudent = ({handleClick}) => {
                     alt="biology"
                 />
                 <CardContent>
-                    <Typography variant="h5">
-                        Biology
-                    </Typography>
+                    <Box
+                        display="flex"  
+                    >
+                        <Box m="auto">
+                            <Typography variant="h5">
+                                Biology
+                            </Typography>
+                        </Box>
+                    </Box>
                 </CardContent>
             </Card>
         </Grid>
-    </Grid>  );
+    </Grid>
+    </Box>
+    </Box>
+    </Container>
+    );
 }
  
 export default MainStudent;

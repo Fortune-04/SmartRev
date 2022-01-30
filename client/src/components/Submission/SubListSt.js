@@ -8,9 +8,19 @@ import SubTable from './SubTable';
 import SubmissionFinder from '../../apis/SubmissionFinder';
 import Container from '@mui/material/Container';
 
-const SubList = () => {
+const SubListSt = () => {
 
+  //Data
+  const [id, setId] = useState();
+  const [mathCode, setMathCode] = useState();
+  const [phyCode, setPhyCode] = useState();
+  const [chemCode, setChemCode] = useState();
+  const [bioCode, setBioCode] = useState();
+
+  //Output
   const [subs, setSubs] = useState();
+
+  //Tab
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -49,6 +59,31 @@ const SubList = () => {
       </Box>
     )
   }
+
+  useEffect(() =>{
+
+    const getProfile = async () => {
+        try {
+          const res = await fetch("http://localhost:4400/profile", {
+            method: "GET",
+            headers: { token: localStorage.token }
+          });
+    
+          const parseData = await res.json();
+          setId(parseData.data.profile[0].userid);
+          setMathCode(parseData.data.profile[0].math);
+          setPhyCode(parseData.data.profile[0].physics);
+          setChemCode(parseData.data.profile[0].chemistry);
+          setBioCode(parseData.data.profile[0].biology);
+
+        } catch (err) {
+          console.error(err.message);
+        }
+    };
+
+    getProfile();
+
+  }, []);
 
   useEffect(() => {
 
@@ -100,19 +135,19 @@ const SubList = () => {
     <>
       {tabMenu()}
       {viewTab() === 0 && (
-        <SubTable subs={subs} />
+        <SubTable subs={subs} code={mathCode}/>
       )}
       {viewTab() === 1 && (
-        <SubTable subs={subs} />
+        <SubTable subs={subs} code={phyCode}/>
       )}
       {viewTab() === 2 && (
-        <SubTable subs={subs} />
+        <SubTable subs={subs} code={chemCode}/>
       )}
       {viewTab() === 3 && (
-        <SubTable subs={subs} />
+        <SubTable subs={subs} code={bioCode}/>
       )}
     </>
   );
 }
  
-export default SubList;
+export default SubListSt;

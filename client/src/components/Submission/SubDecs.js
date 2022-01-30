@@ -1,10 +1,85 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
+import { useParams } from "react-router-dom";
+import SubmissionFinder from "../../apis/SubmissionFinder";
+
+//Material UI
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Submission from "./SubmissionFile1";
+import SubButton from "./SubButton";
 
 const SubDecs = () => {
+
+    const {sid} = useParams();
+
+    //Data
+    const [fullname, setFullname] = useState();
+    const [userid, setUserid] = useState();
+
+    //Output
+    const [details, setDetails] = useState([]);
+    const [status, setStatus] = useState(false);
+
+    useEffect(() =>{
+
+        const getProfile = async () => {
+            try {
+              const res = await fetch("http://localhost:4400/profile", {
+                method: "GET",
+                headers: { token: localStorage.token }
+              });
+        
+              const parseData = await res.json();
+              setFullname(parseData.data.profile[0].fullname);
+              setUserid(parseData.data.profile[0].userid);
+
+            } catch (err) {
+              console.error(err.message);
+            }
+        };
+
+        getProfile();
+
+    }, []);
+
+    useEffect(() => {
+
+        const fetchDetail = async () => {
+            try {
+                const response = await SubmissionFinder.get(`/dis/${sid}`)
+                setDetails(response.data.data.sub)
+                console.log(response)
+              } catch (err) {
+                console.log(err)
+            }
+        }
+
+        fetchDetail();
+
+    }, []);
+
+    useEffect(() => {
+        const checkStatus = async () => {
+            try {
+                const response = await SubmissionFinder.get(`/submissionlist/${sid}/${userid}`)
+                if(response.data.data.sub.length !== 0){
+                    setStatus(true);
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        if(userid){
+            checkStatus();
+        }
+
+    }, [userid]);
+    
+
+    console.log(sid);
+    console.log(details)
+
     return(
         <Container size="sm">
             <Typography
@@ -13,9 +88,10 @@ const SubDecs = () => {
                 component="h2"
                 gutterBottom
             >
-                Topic
+                Submission
             </Typography>
-            <div style={{ width: '100%' }}>
+            {details && details.map((detail) => (
+                <div key={detail.subid} style={{ width: '100%' }}>
                 <Box
                     sx={{
                     display: 'flex',
@@ -24,7 +100,7 @@ const SubDecs = () => {
                     bgcolor: '#b3e5fc',
                     }}
                 >
-                    <Typography>Title &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: Introduction to Physics Exercise 1</Typography>
+                    <Typography>Title &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: {detail.title}</Typography>
                     {/* <Typography sx={{flexGrow: 1}}>Introduction to Physics</Typography> */}
                 </Box>
                 <Box
@@ -35,7 +111,7 @@ const SubDecs = () => {
                     bgcolor: '#e1f5fe',
                     }}
                 >
-                    <Typography>Due Date &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: 2 January 2030</Typography>
+                    <Typography>Due Date &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: {detail.duedate}</Typography>
                     {/* <Typography sx={{flexGrow: 1}}>2 December 2021</Typography> */}
                 </Box>
                 <Box
@@ -59,11 +135,13 @@ const SubDecs = () => {
                     bgcolor: '#e1f5fe',
                     }}
                 >
-                    <Typography>Submission Status : - </Typography>
+                    {status? <Typography>Submission Status : Done </Typography> : <Typography>Submission Status : Not available </Typography>}
                     {/* <Typography sx={{flexGrow: 1}}>2 December 2021</Typography> */}
                 </Box>
-            </div>
-            <Submission/>
+                </div>
+            ))}
+            
+            <SubButton sid={sid} fullname={fullname} id={userid}/>
 
         </Container>
     )

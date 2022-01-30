@@ -1,4 +1,4 @@
-import React, {useEffect, useContext } from 'react'
+import React, {useEffect, useState, useContext } from 'react'
 // import YouTube from 'react-youtube';
 // import "./VideoLink.css"
 import ReactPlayer from 'react-player'
@@ -45,22 +45,27 @@ import { VideoContext } from '../../context/VideoContext'
 
 // }
 
-const VideoLink = ({videos}) => {
+const VideoLink = ({code, id}) => {
 
   // const { videos, setVideo } = useContext(VideoContext);
+  const [ videos, setVideos ] = useState();
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await VideoFinder.get("/")
-  //       setVideo(response.data.data.video)
-  //       console.log(response)
-  //     } catch (err) {
-  //       console.log(err)
-  //     }
-  //   }
-  //   fetchData();
-  // },[]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await VideoFinder.get(`/${code}`);
+        setVideos(response.data.data.video)
+        console.log(response)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    if(code){
+      fetchData();
+    }
+  },[code]);
+  
+  console.log(code)
 
   return (
     <div>

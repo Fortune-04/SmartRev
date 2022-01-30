@@ -1,10 +1,14 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+
 import UploadNote from "./UploadNote";
+import ClassNote from "./ClassNote";
+import Temp from "../../Temp";
+import Temp2 from "../../Temp2";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -40,13 +44,39 @@ function a11yProps(index) {
 }
 
 const SubList = () => {
-    const [value, setValue] = React.useState(0);
+
+  //Data
+  const [id, setId] = useState();
+  const [role,setRole] = useState();
+
+  //Tab
+  const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  useEffect(() => {
+    const getProfile = async () => {
+        try {
+          const res = await fetch("http://localhost:4400/profile", {
+            method: "GET",
+            headers: { token: localStorage.token }
+          });
+    
+          const parseData = await res.json();
+          setId(parseData.data.profile[0].userid);
+          setRole(parseData.data.profile[0].usertype);
+
+        } catch (err) {
+          console.error(err.message);
+        }
+    };
+    getProfile();
+  },[]);
+
   return (
+    
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
@@ -55,12 +85,18 @@ const SubList = () => {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <UploadNote/>
+        <Temp id={id}/>
+        {/* <UploadNote/> */}
+        
+        
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <UploadNote/>
+        {/* <UploadNote/> */}
+        {/* <ClassNote id={id} role={role}/> */}
+        <Temp2 id={id}/>
       </TabPanel>
     </Box>
+    
   );
 }
  

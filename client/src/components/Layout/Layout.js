@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@mui/styles';
 import Drawer from '@mui/material/Drawer';
 import Typography from '@mui/material/Typography';
@@ -15,16 +15,18 @@ import VideoLibrarySharpIcon from '@mui/icons-material/VideoLibrarySharp';
 import ChatSharpIcon from '@mui/icons-material/ChatSharp';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import BackupRoundedIcon from '@mui/icons-material/BackupRounded';
+import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Divider from '@mui/material/Divider';
+import Box from '@mui/material/Box';
 
 const drawerWidth = 240;
 
-const menuItems = [
+const menuItemsSt = [
     { 
       text: 'Profile', 
       icon: <PersonIcon color="secondary" />, 
@@ -48,9 +50,8 @@ const menuItems = [
     { 
       text: 'Video', 
       icon: <VideoLibrarySharpIcon color="secondary" />, 
-      path: '/videos' 
+      path: '/video' 
     },
-
     // { 
     //   text: 'Chat', 
     //   icon: <ChatSharpIcon color="secondary" />, 
@@ -64,7 +65,56 @@ const menuItems = [
     { 
       text: 'Submission', 
       icon: <BackupRoundedIcon color="secondary" />, 
-      path: '/submission/sublist' 
+      path: '/submission' 
+    },
+    { 
+      text: 'Class', 
+      icon: <SchoolRoundedIcon color="secondary" />, 
+      path: '/class' 
+    },
+
+];
+
+const menuItemsTc = [
+    { 
+      text: 'Profile', 
+      icon: <PersonIcon color="secondary" />, 
+      path: '/profile/:id' 
+    },
+    { 
+      text: 'Quiz', 
+      icon: <QuizSharpIcon color="secondary" />, 
+      path: '/quiz' 
+    },
+    { 
+      text: 'Forum', 
+      icon: <ForumSharpIcon color="secondary" />, 
+      path: '/forum' 
+    },
+    { 
+      text: 'Video', 
+      icon: <VideoLibrarySharpIcon color="secondary" />, 
+      path: '/video' 
+    },
+    // { 
+    //   text: 'Chat', 
+    //   icon: <ChatSharpIcon color="secondary" />, 
+    //   path: '/chat' 
+    // },
+    { 
+      text: 'Note', 
+      icon: <DescriptionRoundedIcon color="secondary" />, 
+      path: '/note' 
+    },
+    { 
+      text: 'Submission', 
+      icon: <BackupRoundedIcon color="secondary" />, 
+      path: '/submission' 
+    },
+    { 
+      text: 'Class', 
+      icon: <SchoolRoundedIcon color="secondary" />, 
+      path: '/class' 
     },
 
 ];
@@ -78,6 +128,7 @@ const useStyles = makeStyles((theme) => {
         },
         root: {
             display: 'flex',
+            minHeight: "100vh",
         },
         drawer: {
             width: drawerWidth,
@@ -86,7 +137,8 @@ const useStyles = makeStyles((theme) => {
             width: drawerWidth,
         },
         active: {
-            background: '#f4f4f4'
+            // background: '#f4f4f4'
+            background: '#e4f2f7'
         },
         title: {
             padding: 30
@@ -117,12 +169,42 @@ const Layout = ({children,setAuth}) => {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
+    const [name, setName] = useState();
+    const [role,setRole] = useState();
 
     const logout = (e) => {
         e.preventDefault()
         localStorage.removeItem("token")
         setAuth(false)
     }
+
+    const SelectRole = () => {
+        if(role === "student"){
+            return 1;
+        }else if(role === "teacher"){
+            return 2;
+        }
+    };
+
+    useEffect(() =>{
+        const getProfile = async () => {
+            try {
+              const res = await fetch("http://localhost:4400/profile", {
+                method: "GET",
+                headers: { token: localStorage.token }
+              });
+        
+              const parseData = await res.json();
+              setName(parseData.data.profile[0].fullname);
+              setRole(parseData.data.profile[0].usertype);
+
+            } catch (err) {
+              console.error(err.message);
+            }
+        };
+
+        getProfile();
+    }, []);
 
     return(
         <div className={classes.root}>
@@ -135,7 +217,7 @@ const Layout = ({children,setAuth}) => {
                     <Typography className={classes.space}>
                         {/* Test */}
                     </Typography>
-                    <Typography>Ali</Typography>
+                    <Typography>{name}</Typography>
                     <Avatar className={classes.avatar} src="/" />
                 </Toolbar>
             </AppBar>
@@ -148,16 +230,24 @@ const Layout = ({children,setAuth}) => {
                 anchor="left"
                 elevation={3}
             >
-                <div>
-                <Typography variant="h5" className={classes.title}>
+                <Box
+                display="flex"
+                height={100}
+                >
+                <Box m="auto">
+                {/* <Typography variant="h5" className={classes.title}>
                     SmartRev
-                </Typography>
-                    {/* <img src="logo.png" alt="logo" style={{height: 81, width: 125}}/> */}
-                </div>
+                </Typography> */}
+                    {/* <img src="/logo.png" alt="logo" style={{height: 40, width: 125}}/> */}
+                    <img src="/logo1.png" alt="logo"/>
+                </Box>
+                </Box>
                 <Divider />
+
                 {/* links/list section */}
-                <List>
-                    {menuItems.map((item) => (
+                {SelectRole() === 1 && (
+                    <List>
+                    {menuItemsSt.map((item) => (
                         <ListItem 
                         button 
                         key={item.text} 
@@ -170,7 +260,27 @@ const Layout = ({children,setAuth}) => {
                         <ListItemText primary={item.text} />
                         </ListItem>
                     ))}
-                </List>
+                    </List>
+                )}
+
+                {SelectRole() === 2 && (
+                    <List>
+                    {menuItemsTc.map((item) => (
+                        <ListItem 
+                        button 
+                        key={item.text} 
+                        onClick={() => history.push(item.path)}
+                        className={location.pathname == item.path ? classes.active : null}
+                        sx={{height: 50}}
+                        
+                        >
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.text} />
+                        </ListItem>
+                    ))}
+                    </List>
+                )}
+                
                 <div className={classes.bottomPush}>
                 <Button onClick={e => logout(e)} variant="outlined" startIcon={<LogoutIcon />}>
                     Logout

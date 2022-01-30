@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import { useParams } from "react-router-dom";
 import ClassFinder from "../../apis/ClassFinder";
 import QuizFinder from "../../apis/QuizFinder";
 
@@ -24,7 +25,7 @@ const useStyles = makeStyles({
     }
 })
 
-const CreateQuiz = () =>{
+const EditQuiz = () =>{
 
     const classes = useStyles();
 
@@ -33,6 +34,7 @@ const CreateQuiz = () =>{
     const [userclasses, setUserclasses] = useState();
     
     //Input to quiz
+    const {qid} = useParams();
     const [title, setTitle] = useState('');
     const [code, setCode] = useState('');
     const [subject, setSubject] = useState('');
@@ -40,7 +42,8 @@ const CreateQuiz = () =>{
 
     //Input to question
     const [quizid, setQuizid] = useState();
-    const [questList, setQuestList] = useState([{quest:"", option1:"", option2:"", option3:"", option4:"", answer:""}]);
+    const [questList, setQuestList] = useState([]);
+    // const [questList, setQuestList] = useState([{quest:"", option1:"", option2:"", option3:"", option4:"", answer:""}]);
 
     //Error handling
     const [update, setUpdate] = useState(false);
@@ -115,11 +118,11 @@ const CreateQuiz = () =>{
     useEffect( async () => {
         if(update === true){
             try {
-                const response = await QuizFinder.post("/create",{
+                const response = await QuizFinder.put("/update",{
                     id, title, code, subject, nameclass 
                 })
                 console.log(response)
-                setQuizid(response.data.data.quiz.quizid);
+                // setQuizid(response.data.data.quiz.quizid);
             } catch (err) {
                 console.error(err.message);
             }
@@ -136,17 +139,20 @@ const CreateQuiz = () =>{
 
                 try {
                     const quest = questList[i];
-                    const body = {quizid, quest};
-                    const response = await fetch(
-                        "http://localhost:4400/quiz/create/question",
-                        {
-                          method: "POST",
-                          headers: {
-                            "Content-type": "application/json"
-                          },
-                          body: JSON.stringify(body)
-                        }
-                    );
+                    // const body = {quizid, quest};
+                    const response = await QuizFinder.put("/question/update",{
+                        id,quest
+                    })
+                    // const response = await fetch(
+                    //     "http://localhost:4400/quiz/create/question",
+                    //     {
+                    //       method: "POST",
+                    //       headers: {
+                    //         "Content-type": "application/json"
+                    //       },
+                    //       body: JSON.stringify(body)
+                    //     }
+                    // );
                     console.log(response);
                     
                 } catch (err) {
@@ -158,8 +164,41 @@ const CreateQuiz = () =>{
         
     },[addStatus]);
 
+    useEffect( async () => {
+        
+        try {
+            const response = await QuizFinder.get(`/edit/${qid}`)
+            console.log(response);
+            setTitle(response.data.data.quiz[0].title);
+            setCode(response.data.data.quiz[0].class);
+        } catch (err) {
+            console.error(err.message);
+        }
+
+        try {
+            const response = await QuizFinder.get(`/question/${qid}`)
+            console.log(response);
+
+            for(let i=0; i<response.data.data.question.length;i++){
+                setQuestList(questList => [...questList, {
+                    quest: response.data.data.question[i].quest,
+                    option1: response.data.data.question[i].option1, 
+                    option2: response.data.data.question[i].option2, 
+                    option3: response.data.data.question[i].option3, 
+                    option4: response.data.data.question[i].option4, 
+                    answer: response.data.data.question[i].answer}]);
+            }
+            console.log(response.data.data.question.length);
+        } catch (err) {
+            console.error(err.message);
+        }
+        
+    }, [])
+
     console.log(questList);
     console.log(quizid);
+    console.log(title);
+    console.log(code);
 
     return(
         <Container size="sm">
@@ -321,7 +360,7 @@ const CreateQuiz = () =>{
                     color="secondary" 
                     variant="contained"
                     >
-                    Submit
+                    Update
                     </Button>
 
                 </Stack>
@@ -331,4 +370,4 @@ const CreateQuiz = () =>{
     )
 }
 
-export default CreateQuiz;
+export default EditQuiz;

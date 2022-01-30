@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import CreateForumSt from './CreateForumSt';
-import CreateForumTc from './CreateForumTc';
+import React, {useState, useEffect} from "react";
+import ClassStudent from "./ClassStudent";
+import ClassTeacher from "./ClassTeacher";
 
-const Forum = () => {
-
+const Class = () => {
+    
     const [role,setRole] = useState();
-    // const [id, setId] = useState();
+    const [id, setId] = useState();
 
     useEffect(() =>{
         const getProfile = async () => {
@@ -17,7 +17,7 @@ const Forum = () => {
         
               const parseData = await res.json();
               setRole(parseData.data.profile[0].usertype);
-            //   setId(parseData.data.profile[0].userid);
+              setId(parseData.data.profile[0].userid);
 
             } catch (err) {
               console.error(err.message);
@@ -32,19 +32,21 @@ const Forum = () => {
             return 1;
         }else if(role === "teacher"){
             return 2;
+        }else{
+            return <div>Loading...</div>
         }
     };
 
     return (
         <>
-        {SelectRole() === 1 && (
-            <CreateForumSt/>
-        )}
-        {SelectRole() === 2 && (
-            <CreateForumTc/>
-        )}
+            {SelectRole() === 1 && (
+                <ClassStudent id={id}/>
+            )}
+            {SelectRole() === 2 && (
+                <ClassTeacher id={id}/>
+            )}
         </>
     );
 }
  
-export default Forum;
+export default Class;

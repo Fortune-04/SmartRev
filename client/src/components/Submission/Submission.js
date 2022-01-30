@@ -1,34 +1,50 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import CreateSub from "./CreateSub";
+import SubListSt from "./SubListSt";
 
 const Submission = () => {
-    return(
-        <div className="container">
-            
-            <Link to='/submission/subcreate'>
-                <div className="card" style={{ width: '18rem' }}>
-                    <div className="card-body">
-                        <h5 className="card-title">Create Submission </h5>
-                    </div>
-                </div>
-            </Link>
-            <Link to='/submission/subdecs'>
-                <div className="card" style={{ width: '18rem' }}>
-                    <div className="card-body">
-                        <h5 className="card-title">Submit File</h5>
-                    </div>
-                </div>
-            </Link>
-            <Link to='/submission/sublist'>
-                <div className="card" style={{ width: '18rem' }}>
-                    <div className="card-body">
-                        <h5 className="card-title">Submit List</h5>
-                    </div>
-                </div>
-            </Link>
 
-        </div>
-    )
+    const [role,setRole] = useState();
+    const [id, setId] = useState();
+
+    useEffect(() =>{
+        const getProfile = async () => {
+            try {
+              const res = await fetch("http://localhost:4400/profile", {
+                method: "GET",
+                headers: { token: localStorage.token }
+              });
+        
+              const parseData = await res.json();
+              setRole(parseData.data.profile[0].usertype);
+              setId(parseData.data.profile[0].userid);
+
+            } catch (err) {
+              console.error(err.message);
+            }
+        };
+
+        getProfile();
+    }, []);
+
+    const SelectRole = () => {
+        if(role === "student"){
+            return 1;
+        }else if(role === "teacher"){
+            return 2;
+        }
+    };
+
+    return (
+        <>
+        {SelectRole() === 1 && (
+            <SubListSt id={id}/>
+        )}
+        {SelectRole() === 2 && (
+            <CreateSub id={id}/>
+        )}
+        </>
+    );
 
 }
 

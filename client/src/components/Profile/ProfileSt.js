@@ -4,14 +4,22 @@ import { useHistory } from "react-router";
 // import { useParams } from "react-router";
 import ProfileFinder from "../../apis/ProfileFinder";
 // import { ProfileContext } from "../context/ProfileContext";
+import BarChartScore from "./BarChartScore";
+import BarChartPerform from "./BarChartPerform";
 
+//Material UI
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
 
-const ProfileForm = (props) =>{
+const ProfileSt = (props) =>{
     // const {id} = useParams;
     let history = useHistory()
     const [id, setId] = useState();
+    const [username, setUsername] = useState("");
     const [fullname, setFullname] = useState("");
     const [email, setEmail] = useState("");
     const [phonenumber, setPhonenumber] = useState("");
@@ -46,6 +54,7 @@ const ProfileForm = (props) =>{
               const parseData = await res.json();
               console.log(parseData);
               setId(parseData.data.profile[0].userid);
+              setUsername(parseData.data.profile[0].username);
               setFullname(parseData.data.profile[0].fullname);
               setEmail(parseData.data.profile[0].email);
               setPhonenumber(parseData.data.profile[0].phonenumber);
@@ -61,14 +70,20 @@ const ProfileForm = (props) =>{
 
     const handleUpdate = async (e) =>{
         e.preventDefault()
-        const updateProfile = await ProfileFinder.put(`/1`,{
+        try{
+          const updateProfile = await ProfileFinder.put(`/1`,{
             id,
             fullname,
             email,
             phonenumber,
             school,
-        })
-        history.push("/loginform")
+          })
+          
+          history.push("/loginform")
+        }catch (err){
+          console.log(err)
+        }
+        
     };
 
     return(
@@ -84,6 +99,24 @@ const ProfileForm = (props) =>{
                     minHeight: 825
                   }}
                 >
+                  <Box
+                    display="flex"
+                    height={500} 
+                    // sx={{minHeight:500}}
+                  >
+                    <Box m="auto">
+                      <Stack
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        spacing={2}
+                      >
+                      <Avatar src="/user.png" sx={{ width: 200, height: 200 }}/>
+                      <Typography>{username}</Typography>
+                      </Stack>
+                    </Box>
+                    
+                  </Box>
                 <div className="mb-3 row">
                   <label htmlFor="age" className="col-sm-2 col-form-label">Full Name</label>
                   <div className="col-sm-10">
@@ -122,7 +155,7 @@ const ProfileForm = (props) =>{
                     mb: 3
                   }}
                 >
-
+                  <BarChartPerform/>
                 </Paper>
                 <Paper 
                   sx={{ 
@@ -132,11 +165,11 @@ const ProfileForm = (props) =>{
                     height: 400
                   }}
                 >
-
+                  <BarChartScore/>
                 </Paper>
               </Grid>
           </Grid>
     );
 }
 
-export default ProfileForm
+export default ProfileSt;

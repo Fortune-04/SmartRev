@@ -37,7 +37,7 @@ const Quiz = () => {
     const SelectRole = () => {
         if(role === "student"){
             return 1;
-        }else{
+        }else if(role === "teacher"){
             return 2;
         }
     };
@@ -49,7 +49,7 @@ const Quiz = () => {
         )}
         {SelectRole() === 2 && (
             // <MainTeacher/>
-            <Temp3/>
+            <Temp3 id={id}/>
         )}
         </>
     );

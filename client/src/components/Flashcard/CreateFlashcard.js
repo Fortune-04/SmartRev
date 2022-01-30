@@ -1,20 +1,87 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import FlashcardList from './FlashcardList';
 import FlashcardFinder from '../../apis/FlashcardFinder';
+
+//Material UI
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import IconButton from '@mui/material/IconButton';
+import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
+import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
+import Stack from '@mui/material/Stack';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    // border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
 
 const FlashcardCreate = () => {
-
+    
+    //Data
+    const [userid, setUserid] = useState();
+    
+    //Output
     const [contents, setContents] = useState(null);
     const [content, setAnycontents] = useState('');
-    const studentid = 1;
-    const subject = "Physics";
+    
+    //Other
+    const {subject} = useParams();
+    const [open, setOpen] = useState(false);
+
+    //To display Flashcard Modal
+    const [currentFcIndex, setCurrentFcIndex] = useState(0);
+    const [currentFcSelected, setCurrentFcSelected] = useState(null);
+    const [showNextButton, setShowNextButton] = useState(true);
+    const [showPrevButton, setShowPrevButton] = useState(false);
+    
+    //Modal
+    const handleOpen = () => {
+        if(contents !==null){
+            setOpen(true);
+            return 1
+        }else {
+            return 2
+        }
+        
+    }
+    const handleClose = () => setOpen(false);
+
+
+    const handleNextButton = () => {
+        if(currentFcIndex == contents.length-1){
+            // Last Flashcard
+            // Disable next button
+            setShowNextButton(false);
+        }else{
+            setCurrentFcIndex(currentFcIndex+1);
+            setShowNextButton(true);
+        }
+    }
+
+    const handlePrevButton = () => {
+        if(currentFcIndex == 0){
+            // Last Flashcard
+            // Disable next button
+            setShowPrevButton(false);
+        }else{
+            setCurrentFcIndex(currentFcIndex-1);
+            setShowPrevButton(true);
+        }
+    }
 
     const handleDelete = async (flashcardid) => {
         
@@ -22,12 +89,13 @@ const FlashcardCreate = () => {
         method: 'DELETE'});
         const newContents = contents.filter(content => content.flashcardid !== flashcardid);
         setContents(newContents);
+
     }
 
     const onSubmitForm = async (e) => {
         // e.preventDefault()
         try {
-            const body = {studentid, subject, content};
+            const body = {userid, subject, content};
             const response = await fetch(
                 "http://localhost:4400/flashcard",
                 {
@@ -46,17 +114,44 @@ const FlashcardCreate = () => {
     }
 
     useEffect(() => {
+        const getProfile = async () => {
+            try {
+              const res = await fetch("http://localhost:4400/profile", {
+                method: "GET",
+                headers: { token: localStorage.token }
+              });
+        
+              const parseData = await res.json();
+              setUserid(parseData.data.profile[0].userid);
+
+            } catch (err) {
+              console.error(err.message);
+            }
+        };
+        getProfile();
+    }, []);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await FlashcardFinder.get("/display")
-                setContents(response.data.data.flashcard)
+                const response = await FlashcardFinder.get(`/display/${subject}/${userid}`)
+                if(response.data.data.flashcard.length !==0){
+                    setContents(response.data.data.flashcard)
+                }
                 console.log(response)
               } catch (err) {
                 console.log(err)
             }
         }
-        fetchData();
-    },[]);
+        if(userid){
+            fetchData();
+        }
+    },[userid]);
+
+    // console.log(showNextButton);
+    // console.log(showPrevButton);
+    // console.log(contents)
+    // console.log(handleOpen());
 
     return (
         <Fragment>
@@ -86,6 +181,51 @@ const FlashcardCreate = () => {
                 <Typography component="h1" variant="h5">
                     Create Flashcard
                 </Typography>
+                {/* <Button onClick={handleOpen}>Open modal</Button> */}
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >  
+                    <Box sx={style}>
+                        <Stack 
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            spacing={2}>
+                            {/* {showPrevButton? <IconButton>
+                                <ArrowBackIosOutlinedIcon onClick={handlePrevButton} sx={{ fontSize: 40 }}/>
+                            </IconButton> : 
+                            <IconButton>
+                                <ArrowBackIosOutlinedIcon disabled sx={{ fontSize: 40 }}/>
+                            </IconButton>
+                            } */}
+                            <IconButton>
+                                <ArrowBackIosOutlinedIcon onClick={handlePrevButton} sx={{ fontSize: 40 }}/>
+                            </IconButton>
+                            {open === true && (
+                            <Typography id="modal-modal-title" variant="h6" component="h2">
+                                {contents[currentFcIndex].content}
+                            </Typography>)}
+                            {/* {contents && <Typography id="modal-modal-title" variant="h6" component="h2">
+                                {contents[currentFcIndex].content}
+                            </Typography>} */}
+                            {/* {showNextButton? 
+                            <IconButton>
+                                <ArrowForwardIosOutlinedIcon onClick={handleNextButton} sx={{ fontSize: 40 }}/>
+                            </IconButton>:
+                            <IconButton>
+                                <ArrowForwardIosOutlinedIcon disabled sx={{ fontSize: 40 }}/>
+                            </IconButton>
+                            } */}
+                            <IconButton>
+                                <ArrowForwardIosOutlinedIcon onClick={handleNextButton} sx={{ fontSize: 40 }}/>
+                            </IconButton>
+                            
+                        </Stack>
+                    </Box>
+                </Modal>
                 <Box component="form" noValidate onSubmit={onSubmitForm} sx={{ mt: 3 }}>
                     {/* <Grid container spacing={2}> */}
                     <Grid item xs={12}>
@@ -100,23 +240,22 @@ const FlashcardCreate = () => {
                     </Grid>  
                     {/* </Grid> */}
                     <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mb: 1 }}
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mb: 1 }}
                     >
                     Create Flashcard
                     </Button>
-                    <Link to="/flashcard/view">
-                        <Button
+                    <Button
                         fullWidth
                         variant="contained"
                         sx={{ mb: 4 }}
                         color="secondary"
-                        >
-                            View
-                        </Button>
-                    </Link>
+                        onClick={handleOpen}
+                    >
+                        View
+                    </Button>
                 </Box>
                 </Box>
             </Container>

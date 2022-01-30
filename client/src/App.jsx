@@ -4,6 +4,8 @@ import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom
 // import {VideoContext, VideoContextProvider} from './context/VideoContext';
 import {VideoContextProvider} from './context/VideoContext';
 import Layout from './components/Layout/Layout';
+
+//Material UI
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import SignUp from "./components/Auth/SignUp";
@@ -15,30 +17,35 @@ import Main from "./routes/Main";
 import Profile from "./components/Profile/Profile";
 import Video from "./components/Video/Video";
 import Videos from "./components/Video/Videos"
-import VideoNav from "./components/Video/VideoNav";
 import VideoAdd from "./components/Video/VideoAdd";
 import Note from "./components/Note/Note";
 import NoteUpload from "./components/Note/UploadNote";
 import Notes from "./components/Note/Notes"
+import NoteClass from "./components/Note/ClassNote2";
 import Quiz from "./components/Quiz/Quiz";
 import QuizList from "./components/Quiz/QuizList"
 import QuizAnswer from "./components/Quiz/AnswerQuiz";
 import QuizCreate from "./components/Quiz/CreateQuiz";
+import QuizEdit from './components/Quiz/EditQuiz';
+import Quizes from './components/Quiz/Quizes';
 import QuizSummary from './components/Quiz/QuizSummary';
-import Forum from "./components/Forum/Forum";
-import ForumCreate from "./components/Forum/CreateForum";
+import Forum from './components/Forum/Forum';
+import ForumDesc from "./components/Forum/ForumDesc";
+import ForumCreateTc from "./components/Forum/CreateForumTc";
 import Flashcard from "./components/Flashcard/Flashcard";
 import FlashcardCreate from './components/Flashcard/CreateFlashcard';
 import FlashcardView from './components/Flashcard/ViewFlashcard';
 import Chat from "./components/Chat/Chat";
 import Submission from "./components/Submission/Submission";
-import SubList from "./components/Submission/SubList"
 import SubCreate from "./components/Submission/CreateSub";
+import SubListSt from "./components/Submission/SubListSt"
+import SubListTc from "./components/Submission/SubListTc";
 import SubmissionSubmit from "./components/Submission/SubmissionFile";
 import SubmissionFile1 from "./components/Submission/SubmissionFile1";
 import SubDecs from "./components/Submission/SubDecs";
+import Class from "./components/Class/Class";
 import Temp from "./Temp";
-import Temp2 from "./Temp2";
+
 
 const theme = createTheme({
     palette: {
@@ -96,35 +103,61 @@ const App = () => {
                         <Route exact path="/loginform" render={props => !isAuthenticated? <LoginForm {...props} setAuth={setAuth}/> :<Redirect to="/profile/:id"/>}/>
                         <Route exact path="/signupform" render={props => !isAuthenticated? <SignUpForm {...props} setAuth={setAuth}/> :<Redirect to="/loginform"/>}/>
                         <Layout setAuth={setAuth}>
+                            {/* Authentication */}
                             <Route exact path="/" component={props => isAuthenticated? <Home {...props} setAuth={setAuth}/> : <Redirect to="/loginform"/>}/>
                             <Route exact path="/main" component={props => isAuthenticated? <Main {...props} setAuth={setAuth}/> : <Redirect to="/loginform"/>}/>
-                            <Route exact path="/profile/:id" component={props => isAuthenticated? <Profile {...props} setAuth={setAuth}/> : <Redirect to="/loginform"/>}/>
-                            <Route exact path="/video" component={Video}/>
-                            {/* <Route exact path="/note" component={NoteUpload}/> */}
-                            <Route exact path="/note" component={Notes}/>
                             <Route exact path="/login" render={props => !isAuthenticated? <Login {...props} setAuth={setAuth}/> :<Redirect to="/main"/>}/>
                             <Route exact path="/signup" render={props => !isAuthenticated? <SignUp {...props} setAuth={setAuth}/>:<Redirect to="/loginform"/>}/>
-                            <Route exact path="/videonav" component={VideoNav}/>
-                            <Route exact path="/videoadd" component={VideoAdd}/>
-                            <Route exact path="/videos" component={Videos}/>
+
+                            {/* Profile */}
+                            <Route exact path="/profile/:id" component={props => isAuthenticated? <Profile {...props} setAuth={setAuth}/> : <Redirect to="/loginform"/>}/>
+
+                            {/* Quiz */}
                             <Route exact path="/quiz" component={Quiz}/>
                             <Route exact path="/quiz/quizlist" component={QuizList}/>
                             <Route exact path="/quiz/answer" component={QuizAnswer}/>
                             <Route exact path="/quiz/create" component={QuizCreate}/>
+                            <Route exact path="/quiz/edit/:qid" component={QuizEdit}/>
                             <Route exact path="/quiz/quizsummary" component={QuizSummary}/>
-                            <Route exact path="/forum" component={props => isAuthenticated? <ForumCreate {...props} setAuth={setAuth}/> : <Redirect to="/loginform"/>}/>
-                            <Route exact path="/forum/description/:id" component={Forum}/>
+                            {/* <Route exact path="/quiz/test" component={Quizes}/> */}
+
+                            {/* Flashcard */}
                             <Route exact path="/flashcard" component={Flashcard}/>
-                            <Route exact path="/flashcard/create" component={FlashcardCreate}/>
+                            <Route exact path="/flashcard/create/:subject" component={FlashcardCreate}/>
                             <Route exact path="/flashcard/view" component={FlashcardView}/>
+
+                            {/* Forum */}
+                            <Route exact path="/forum" component={Forum}/>
+                            <Route exact path="/forum/create" component={ForumCreateTc}/>
+                            <Route exact path="/forum/description/:id" component={ForumDesc}/>
+
+                            {/* Video */}
+                            <Route exact path="/video" component={Video}/>
+                            <Route exact path="/videos" component={Videos}/>
+                            <Route exact path="/videoadd" component={VideoAdd}/>
+                            
+                            {/* Note */}
+                            <Route exact path="/note" component={Notes}/>
+                            <Route exact path="/note/classtc/:code" component={NoteClass}/>
+                            {/* <Route exact path="/note" component={NoteUpload}/> */}
+
+                            {/* Chat */}
                             <Route exact path="/chat" component={Chat}/>
+
+                            {/* Submission */}
                             <Route exact path="/submission" component={Submission}/>
+
+                            <Route exact path="/submission/sublistst" component={SubListSt}/>
+                            <Route exact path="/submission/subdecs/:sid" component={SubDecs}/>
+
                             <Route exact path="/submission/subcreate" component={SubCreate}/>
-                            <Route exact path="/submission/sublist" component={SubList}/>
-                            <Route exact path="/submission/submitfile" component={props => isAuthenticated? <SubmissionSubmit {...props} setAuth={setAuth}/> : <Redirect to="/loginform"/>}/>
+                            <Route exact path="/submission/sublisttc/:code" component={SubListTc}/>
+                            <Route exact path="/submission/submitfile" component={SubmissionSubmit}/>
                             <Route exact path="/submission/submissionfile" component={SubmissionFile1}/>
-                            <Route exact path="/submission/subdecs" component={SubDecs}/>
-                            <Route exact path="/temp2" component={Temp2}/>
+                            
+                            {/* Class */}
+                            <Route exact path="/class" component={Class}/>
+                        
                         </Layout>
                     </Switch>
                 </Router>
