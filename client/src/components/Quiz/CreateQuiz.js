@@ -208,7 +208,7 @@ const CreateQuiz = () =>{
                         <Card sx={{ mb: 2, p: 2 }} key={index}>
                             <TextField className={classes.field}
                                 
-                                label="Question 1"
+                                label={"Question "+(index+1)}
                                 variant="outlined"
                                 color="secondary"
                                 multiline
@@ -309,7 +309,7 @@ const CreateQuiz = () =>{
                 <Stack direction="row" spacing={2}>
 
                     <Button
-                    color="secondary" 
+                    color="primary" 
                     variant="contained"
                     onClick={handleQuestAdd}
                     >
@@ -318,7 +318,7 @@ const CreateQuiz = () =>{
 
                     <Button
                     type="submit" 
-                    color="secondary" 
+                    color="primary" 
                     variant="contained"
                     >
                     Submit

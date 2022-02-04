@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: '#0782cb',
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -56,10 +56,12 @@ const CreateForumTc = () => {
 
   const classes = useStyles();
 
+  //Data
   const [id, setId] = useState();
   const [author, setAuthor] = useState();
   const [userclasses, setUserclasses] = useState();
 
+  //Input
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
   const [code, setCode] = useState('');
@@ -67,19 +69,19 @@ const CreateForumTc = () => {
   const [subject, setSubject] = useState('');
   const [nameclass, setNameclass] = useState('');
 
+  //Error Handling
   const [titleError, setTitleError] = useState(false);
   const [detailsError, setDetailsError] = useState(false);
+  const [subjectError, setSubjectError] = useState(false);
   const [update, setUpdate] = useState(false);
-  const [dataupdate, setDataupdate] = useState(false);
+  // const [dataupdate, setDataupdate] = useState(false);
   // const [isPending, setIsPending] = useState(false);
 
   const date = new Date();
   const todayDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
 
   const handleSubmit = async(e) => {
-    // e.preventDefault()
-    setTitleError(false)
-    setDetailsError(false)
+    e.preventDefault()
 
     if (title == '') {
       setTitleError(true)
@@ -87,18 +89,20 @@ const CreateForumTc = () => {
     if (details == '') {
       setDetailsError(true)
     }
-    if (title && details) {
-      console.log(title, details)
+    if (code == '') {
+      setSubjectError(true)
     }
 
-    for (let i = 0; i < userclasses.length; i++) {
-      if(userclasses[i].code === code){
-          setSubject(userclasses[i].subject)
-          setNameclass(userclasses[i].name)
+    if (title && details && code) {
+      for (let i = 0; i < userclasses.length; i++) {
+        if(userclasses[i].code === code){
+            setSubject(userclasses[i].subject)
+            setNameclass(userclasses[i].name)
+        }
       }
+      setUpdate(true);
     }
-
-    setUpdate(true);
+    
   }
 
   useEffect(() => {
@@ -210,7 +214,10 @@ const CreateForumTc = () => {
           </Typography>
           <form noValidate autoComplete="off" onSubmit={handleSubmit}>
               <TextField className={classes.field}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value)
+                setTitleError(false)
+              }}
               label="Title" 
               variant="outlined" 
               color="secondary" 
@@ -218,9 +225,13 @@ const CreateForumTc = () => {
               required
               sx={{ mb: 2 }}
               error={titleError}
+              helperText={titleError? "Empty Field": ""}
               />
               <TextField className={classes.field}
-              onChange={(e) => setDetails(e.target.value)}
+              onChange={(e) => {
+                setDetails(e.target.value)
+                setDetailsError(false)
+              }}
               label="Details"
               variant="outlined"
               color="secondary"
@@ -230,6 +241,7 @@ const CreateForumTc = () => {
               required
               sx={{ mb: 2 }}
               error={detailsError}
+              helperText={detailsError? "Empty Field": ""}
               />
 
               <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
@@ -240,7 +252,12 @@ const CreateForumTc = () => {
                   id="demo-simple-select"
                   value={code}
                   label="Class"
-                  onChange={(e) => setCode(e.target.value)}
+                  error={subjectError}
+                  helperText={subjectError? "Empty Field": ""}
+                  onChange={(e) => {
+                    setCode(e.target.value)
+                    setSubjectError(false)
+                  }}
                 >
                   {/* <MenuItem value={"mathematics"}>Mathematics</MenuItem>
                   <MenuItem value={"physics"}>Physics</MenuItem>
@@ -254,7 +271,7 @@ const CreateForumTc = () => {
               </FormControl>
               <Button
                 type="submit" 
-                color="secondary" 
+                color="primary" 
                 variant="contained"
                 // sx={{ mb: 3 }}
                 endIcon={<KeyboardArrowRightIcon />}>

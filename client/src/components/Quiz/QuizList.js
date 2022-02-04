@@ -1,7 +1,10 @@
 import React, {useState, useEffect} from 'react';
+import { useParams } from "react-router-dom";
 import AnswerQuiz from './AnswerQuiz';
-import Quizes from './Quizes';
+import Quizes from './Quizes5.js';
 import Quizes2 from './Quizes2';
+import QuizSubList from "./QuizSubList";
+import QuizGeneral from "./QuizGeneral"
 
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -45,6 +48,9 @@ function a11yProps(index) {
 const QuizList = () => {
     const [value, setValue] = useState(0);
 
+    //Subject
+    const {code, sub} = useParams();
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -73,6 +79,8 @@ const QuizList = () => {
             }
         }
     }, [value])
+    
+    console.log(sub)
 
     return ( 
     <Box sx={{ width: '100%' }}>
@@ -85,10 +93,11 @@ const QuizList = () => {
       <TabPanel value={value} index={0}>
         {/* <AnswerQuiz/> */}
         {/* <Quizes/> */}
-        <Quizes2/>
+        <QuizGeneral sub={sub}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <AnswerQuiz/>
+        {/* <AnswerQuiz/> */}
+        <QuizSubList/>
       </TabPanel>      
     </Box>
     );

@@ -4,6 +4,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import VideoFinder from '../../apis/VideoFinder';
 import VideoLink from "./VideoLink";
+import Divider from '@mui/material/Divider';
 
 const Videos = () => {
 
@@ -51,6 +52,7 @@ const Videos = () => {
               <Tab label="Chemistry" value={2}/>
               <Tab label="Biology" value={3}/>
           </Tabs>
+          <Divider/>
           </Box>
       )
   }

@@ -25,6 +25,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 
 const style = {
     width: '100%',
@@ -42,7 +43,7 @@ const useStyles = makeStyles({
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: '#0782cb',
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -221,8 +222,12 @@ const ProfileTc = () =>{
                     {userclasses && userclasses.map(userclass => (
                         <Card key={userclass.classid}>
                             <ListItem button onClick={()=>{handleClick(userclass.code, userclass.subject)}}>
+                                <Typography>Class Name{<DoubleArrowIcon color="primary"/>}</Typography>
                                 <ListItemText primary={userclass.name} />
+                                <Typography>Class Code{<DoubleArrowIcon color="primary"/>}</Typography>
                                 <ListItemText primary={userclass.code} />
+                                <Typography>Class Code{<DoubleArrowIcon color="primary"/>}</Typography>
+                                <ListItemText primary={userclass.subject.charAt(0).toUpperCase()+userclass.subject.slice(1)} />
                             </ListItem>
                         </Card>
                     ))}

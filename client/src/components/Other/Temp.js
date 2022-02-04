@@ -2,7 +2,7 @@
 // in progress
 
 import React, { useState, useEffect} from 'react';
-import NoteFinder from "./apis/NoteFinder";
+import NoteFinder from "../../apis/NoteFinder";
 
 import { Viewer } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
@@ -11,7 +11,7 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 //Firebase
-import { storage } from "./utils/firebase";
+import { storage } from "../../utils/firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "@firebase/storage";
 
 //Material UI

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import ProfileSt from "./ProfileSt";
 import ProfileTc from "./ProfileTc";
 
-const Quiz = () => {
+const Profile = () => {
 
     const [role,setRole] = useState();
     const [id, setId] = useState();
@@ -47,4 +47,4 @@ const Quiz = () => {
     );
 }
  
-export default Quiz;
+export default Profile;

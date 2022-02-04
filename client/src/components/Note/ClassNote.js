@@ -1,6 +1,10 @@
-import React, { useState, useEffect, Fragment} from 'react';
+import React, { useState, useEffect} from 'react';
 import NoteFinder from "../../apis/NoteFinder";
-import ClassFinder from "../../apis/ClassFinder"
+import { useParams } from "react-router-dom";
+
+//Firebase
+import { storage } from "../../utils/firebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "@firebase/storage";
 
 //Material UI
 import Typography from '@mui/material/Typography';
@@ -14,258 +18,288 @@ import CardMedia from '@mui/material/CardMedia';
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 
-//Firebase
-import { storage } from "../../utils/firebase";
-import { getDownloadURL, ref, uploadBytesResumable } from "@firebase/storage";
+const ClassNote = () => {
 
-const ClassNote = ({id,role}) => {
-    
-  //Data
-  const [userclasses, setUserclasses] = useState([]);
+    const {id,role,subject,classname,code} = useParams();
 
-  //Input
-  const [files, setFiles] = useState([]);
-  const [urls, setUrls] = useState([]);
-  const [progress, setProgress] = useState(0);
+    const [files, setFiles] = useState([]);
+    const [urls, setUrls] = useState([]);
+    const [progress, setProgress] = useState(0);
+    const [toUpdate, setToUpdate] = useState(false);
+    const [notes, setNotes] = useState();
+    let img = "/pdf-icon3.jpg";
 
-  const [notes, setNotes] = useState([]);
+    //Input for save
+    const [link, setLink] = useState('');
+    const [filename, setFilename] = useState('');
 
-  //Error Handling
-  const [toUpdate, setToUpdate] = useState(false);
+    //LikeButton
+    const [counter, setCounter] = useState(0);
+    const [notId, setNotId] = useState();
 
-  //Images
-  const img = "pdf-icon3.jpg";
+    //Error Handling
+    const [save, setSave] = useState(false);
 
-  const handleChange = (e) => {
-      for (let i = 0; i < e.target.files.length; i++) {
+    const handleChange = (e) => {
+        for (let i = 0; i < e.target.files.length; i++) {
         const newFile = e.target.files[i];
         newFile["id"] = Math.random();
-        setFiles(files => [...files, newFile]);
-      }
-  };
-
-  const handleUpload = () => {
-    const promises = [];
-    files.map((file) => {
-      const storageRef = ref(storage, `files/${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      promises.push(uploadTask);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setProgress(progress);
-        },
-        (error) => {
-          console.log(error);
-        },
-        async () => {
-            await getDownloadURL(uploadTask.snapshot.ref).then((urls) =>{
-                setUrls((prevState) => [...prevState, urls]);
-            })
+        setFiles((prevState) => [...prevState, newFile]);
         }
-      );
-
-    });
-
-    Promise.all(promises)
-      .then(() => alert("All files uploaded"))
-      .catch((err) => console.log(err));
-      
-    setToUpdate(true)
-  };
-
-  const handleDelete = async (noteid) =>{
-    await fetch("http://localhost:4400/note/"+ noteid, {
-    method: 'DELETE'});
-    const newNotes = notes.filter(note => note.noteid !== noteid);
-    setNotes(newNotes);
-  }
-
-  useEffect(() => {
-
-    const getInfoSt = async () => {
-      try {
-        const res = await fetch("http://localhost:4400/profile", {
-          method: "GET",
-          headers: { token: localStorage.token }
-        });
-
-        const parseData = await res.json();
-        if(parseData.data.profile[0].math !== null){
-          setUserclasses(userclasses => [...userclasses,{classid: 1,name:"Mathematics",code:parseData.data.profile[0].math}]);
-        }
-        if(parseData.data.profile[0].physics !== null){
-          setUserclasses(userclasses => [...userclasses,{classid: 2,name:"Physics",code:parseData.data.profile[0].physics}]);
-        }
-        if(parseData.data.profile[0].chemistry !== null){
-          setUserclasses(userclasses => [...userclasses,{classid: 3,name:"Chemistry",code:parseData.data.profile[0].chemistry}]);
-        }
-        if(parseData.data.profile[0].biology !== null){
-          setUserclasses(userclasses => [...userclasses,{classid: 4,name:"Biology",code:parseData.data.profile[0].biology}]);
-        }        
-
-      } catch (err) {
-        console.error(err.message);
-      }
-    }
-
-    const getInfoTc = async () => {
-      try {
-        const response = await ClassFinder.get(`/find/code/${id}`)
-        setUserclasses(response.data.data.class);
-      } catch (err) {
-        console.error(err.message);
-      }
     };
 
-    if(id && role){
-      if(role === 'student'){
-        getInfoSt();
-      }else if(role === 'teacher'){
-        getInfoTc();
-      }
-    }
-  
-  }, [id, role]);
+    const handleUpload = () => {
 
-  useEffect(() => {
-
-    if(urls !== null && toUpdate===true){
-      const fetchData = () => {
-        urls.map( async (url) => {
-          try {
-            const body = {url, id};
-            const response = await fetch(
-                "http://localhost:4400/note/create",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-type": "application/json"
-                  },
-                  body: JSON.stringify(body)
-                }
+        const promises = [];
+        files.map((file) => {
+        const storageRef = ref(storage, `files/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        promises.push(uploadTask);
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+            const progress = Math.round(
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             );
-            console.log(response);
-            
-          } catch (err) {
-              console.error(err.message);
-          }
+            setProgress(progress);
+            },
+            (error) => {
+            console.log(error);
+            },
+            async () => {
+                await getDownloadURL(uploadTask.snapshot.ref).then((urls) => {
+                    setUrls((prevState) => [...prevState, {urls:urls, name:file.name}]);
+                })
+            }
+        );
+
         });
-      }
-      fetchData();
+
+        Promise.all(promises)
+        .then(() => alert("All files uploaded"))
+        .catch((err) => console.log(err));
+        
+        setToUpdate(true)
+    };
+
+    const handleDelete = async (noteid) =>{
+        await fetch("http://localhost:4400/note/"+ noteid, {
+        method: 'DELETE'});
+        const newNotes = notes.filter(note => note.noteid !== noteid);
+        setNotes(newNotes);
     }
 
-    const fetchFile = async() =>{
-      for(let i=0; i < userclasses.length; i++){
+    const handleLike = async (noteid) =>{
         try {
-          const response = await NoteFinder.get(`/display/${userclasses[i].code}`)
-          if(response.data.data.note.length !==0){
-            setNotes(notes => [...notes,response.data.data.note])
-          }
-          console.log(response)
+            const response = await NoteFinder.get(`/display/save/${noteid}`)
+            setLink(response.data.data.note[0].note);
+            setFilename(response.data.data.note[0].filename);
+            if(response.data.data.note[0].counter === 0){
+                setCounter(1)
+            }else{
+                setCounter(response.data.data.note[0].counter + 1)
+            }
+            setNotId(noteid);
         } catch (err) {
-          console.log(err)
+            console.log(err)
         }
-      } 
+        setSave(true);
     }
 
-    // const fetchFile = async() =>{
-    //   try {
-    //     const response = await NoteFinder.get(`/display`)
-    //     setNotes(response.data.data.note)
-    //     console.log(response)
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    // }
+    useEffect(() => {
 
-    fetchFile();
-  
-  },[urls, toUpdate]);
+        const updateCounter = async () => {
+            try {
+                const response = await NoteFinder.put(`/update`, {counter,notId})
+            } catch (error) {
+                console.log(error)
+            }
+        }
 
-  // useEffect(() => {
+        if(counter && notId){
+            updateCounter();
+        }
+    }, [counter, notId]);
+
+    useEffect(() => {
+        const fetchNotes = async() =>{
+            try {
+                const response = await NoteFinder.get(`/class/display/${code}`)
+                setNotes(response.data.data.note)
+                console.log(response)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+
+        if(code){
+        fetchNotes();
+        }
+
+    },[code]);
+
+    useEffect(() => {
+        const uploadSaveNote = async () => {
+            try {
+                const response = await NoteFinder.post('/create/save',{id,link,filename})
+            } catch (err) {
+                console.log(err)
+            }
+        }
+
+        if(save === true){
+            uploadSaveNote();
+            setSave(false);
+        }
+
+    }, [save]);
     
-  //   const fetchFile = async(info) =>{
-  //     try {
-  //       const response = await NoteFinder.get(`/display/${info}`)
-  //       setNotes(response.data.data.note)
-  //       console.log(response)
-  //     } catch (err) {
-  //       console.log(err)
-  //     }
-  //   }
-  
-  //   if(userclasses){
-  //     for (let i = 0; i < userclasses.length; i++) {
-  //       fetchFile(userclasses[i].code)
-  //     }
-  //   }
 
-  // }, [userclasses]);
+    useEffect(() => {
 
-  console.log(notes)
-  console.log(userclasses)
-  
+        if(urls !== null && toUpdate===true && role==="teacher"){
+            const fetchData = () => {
+                urls.map( async (url) => {
+                    let link = url.urls
+                    let name = url.name
 
-  return (
-    <Container component="main" maxWidth="md">
-      {userclasses && userclasses.map(userclass => (
-        <Fragment key={userclass.classid}>
-          <Typography
-              // variant="h6" 
-              color="textSecondary"
-              // component="h2"
-              gutterBottom
-          >
-              {userclass.name}
-          </Typography>
-          <Card variant="outlined" sx={{ mb: 2, p: 2 }}>
-          <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
-          <Stack
-            spacing={2} 
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
+                    try {
+                        const body = {id, link, name, code, subject, classname};
+                        const response = await fetch(
+                            "http://localhost:4400/note/class/teacher/create",
+                            {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify(body)
+                            }
+                        );
+                        console.log(response);
+                        
+                    } catch (err) {
+                        console.error(err.message);
+                    }
+                });
+            }
+            fetchData();
+        }
+
+        if(urls !== null && toUpdate===true && role==="student"){
+            const fetchData = () => {
+                urls.map( async (url) => {
+
+                    let link = url.urls
+                    let name = url.name
+
+                    try {
+                        const body = {id, link, name, code, subject};
+                        const response = await fetch(
+                            "http://localhost:4400/note/class/student/create",
+                            {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify(body)
+                            }
+                        );
+                        console.log(response);
+                        
+                    } catch (err) {
+                        console.error(err.message);
+                    }
+                });
+            }
+            fetchData();
+        }
+        
+
+        const fetchFile = async() =>{
+            try {
+                const response = await NoteFinder.get(`/class/display/${code}`)
+                setNotes(response.data.data.note)
+                console.log(response)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+
+        if(id){
+            fetchFile();
+        }
+
+    },[urls, toUpdate]);
+
+    console.log("files: ", files);
+    console.log("urls", urls);
+    console.log(id);
+    console.log(role)
+    console.log(subject)
+    console.log(classname)
+    console.log(code)
+
+    return(
+      <>
+      <Container component="main" maxWidth="md">
+        <Container>
+            <Typography
+                // variant="h6" 
+                color="textSecondary"
+                // component="h2"
+                gutterBottom
             >
+              Class {<DoubleArrowIcon color="primary"/>} {classname}
+            </Typography>
+          <Card variant="outlined" sx={{ mb: 1, p: 2 }}>
+            <Stack
+              spacing={2} 
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              >
               <input type="file" multiple onChange={handleChange} />
               <Button variant="contained" onClick={handleUpload}>Upload</Button>
-          </Stack>
+            </Stack>
           </Card>
-          <Grid container spacing={3}>
-            {notes && notes.map((note, i) => (
-              <Grid item xs={12} md={6} lg={3} key={note.noteid} >
-                <Card >
-                  <a href={note.note.note} target="_blank">
-                  <CardMedia
-                      component="img"
-                      // height="100"
-                      image={img}
-                      alt={note.note.filename}
-                  />
-                  <CardContent>
-                    <Typography variant="body" color="textSecondary">
-                        { note.filename }
-                    </Typography>
-                  </CardContent>
-                  </a>
-                  <CardActions disableSpacing>
-                  <IconButton onClick={() => handleDelete(note.noteid)}>
-                      <DeleteOutlinedIcon/>
-                  </IconButton>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-          </Card>
-        </Fragment>
-      ))}
-    </Container>
+          <Card variant="outlined" sx={{ mb: 2, p: 2 }}>
+            <Grid container spacing={3}>
+                {notes && notes.map((note, i) => (
+                    <Grid item xs={12} md={6} lg={3} key={note.noteid} >
+                      <Card >
+                          <a href={note.note} target="_blank">
+                            <CardMedia
+                              component="img"
+                              // height="100"
+                              image={img}
+                              alt={note.filename}
+                            />
+                            <CardContent>
+                              <Typography variant="body" color="textSecondary">
+                                  { note.filename }
+                              </Typography> 
+                            </CardContent>
+                          </a>
+                          <CardActions disableSpacing>
+                            <IconButton onClick={() => handleDelete(note.noteid)}>
+                              <DeleteOutlinedIcon/>
+                            </IconButton>
+                            <IconButton onClick={() => handleLike(note.noteid)}>
+                              <FavoriteBorderOutlinedIcon/>
+                            </IconButton>
+                          </CardActions>
+                      </Card>
+                    </Grid>
+                ))}
+            </Grid>
+          </Card>  
+        </Container>
+      </Container>
+      </>
   );
 }
- 
+
 export default ClassNote;

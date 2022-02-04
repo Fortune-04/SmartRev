@@ -36,6 +36,10 @@ const Forum = () => {
     const todayDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
     const time = date.getHours() + ":" + date.getMinutes();
 
+    //LikeButton
+    const [counter, setCounter] = useState(0);
+    const [repId, setRepId] = useState();
+
     //Error handling
     const [button, setButton] = useState(true);
     const [toUpdate, setToUpdate] = useState(false);
@@ -52,6 +56,37 @@ const Forum = () => {
         setMyreply({author: "", date: "", time: "", reply: ""});
         setButton(false);
     };
+
+    const clickLike = async (replyid) => {
+        try {
+            const response = await ForumFinder.get(`/replyforum/${replyid}`)
+            console.log(response)
+            if(response.data.data.reply[0].counter === 0){
+                setCounter(1)
+            }else{
+                setCounter(response.data.data.reply[0].counter + 1)
+            }
+            setRepId(replyid);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+
+        const updateCounter = async () => {
+            try {
+                const response = await ForumFinder.put(`/replyforum`, {counter,repId})
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        if(counter && repId){
+            updateCounter();
+        }
+    }, [counter, repId]);
+    
 
     useEffect(() =>{
 
@@ -160,7 +195,7 @@ const Forum = () => {
                         </Avatar>
                         }
                         action={
-                        <IconButton aria-label="settings">
+                        <IconButton onClick={() => {clickLike(reply.replyid)}} aria-label="settings">
                             <ThumbUpOutlinedIcon />
                         </IconButton>
                         }
@@ -169,7 +204,7 @@ const Forum = () => {
                     />
                     <CardContent>
                         <Typography>
-                        {reply.reply}
+                            {reply.reply}
                         </Typography>
                     </CardContent>
                     

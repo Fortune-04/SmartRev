@@ -73,7 +73,7 @@ const VideoLink = ({code, id}) => {
       {videos && videos.map((video) => {
         return (
             <div className="card w-50" key={video.videoid}>
-              <h5 className="card-header">{video.title}</h5>
+              <h5 className="card-header text-white" style={{background: '#0782cb'}}>{video.title}</h5>
               <div className="card-body">
                 <div className="mb-3 row">
                   <ReactPlayer url={video.link} controls={true} />

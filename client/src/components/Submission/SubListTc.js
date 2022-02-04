@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { useParams } from "react-router-dom";
-import ClassFinder from '../../apis/ClassFinder';
 import SubmissionFinder from '../../apis/SubmissionFinder';
 
 //Material UI
@@ -10,7 +9,6 @@ import Container from '@mui/material/Container';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
@@ -20,6 +18,23 @@ import { styled } from '@mui/material/styles';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Link from '@mui/material/Link';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import Stack from '@mui/material/Stack';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { makeStyles } from '@mui/styles';
+import Card from '@mui/material/Card';
+
+const useStyles = makeStyles({
+  field: {
+    marginTop: 20,
+    marginBottom: 20,
+    display: 'block'
+  }
+})
 
 const style = {
     width: '100%',
@@ -29,7 +44,7 @@ const style = {
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: '#0782cb',
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -49,82 +64,66 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const SubListTc = () => {
 
+   //Style
+   const classes = useStyles();
+
   //Data
   const {code} = useParams();
   const [id, setId] = useState();
   const [subs, setSubs] = useState();
   // const [userclasses, setUserclasses] = useState();
 
+  //Edit Forum
+  const [sbid, setSbid] = useState();
+  const [showEdit, setShowEdit] = useState();
+  const [title, setTitle] = useState('');
+  const [date, setDate] = useState();
+
   //Output
   const [lists, setLists] = useState([]);
 
+  //Error handling
+  const [preview, setPreview] = useState(false)
+  const [titleError, setTitleError] = useState(false);
+
   const handleClick = async (subid) => {
     try {
-        const response = await SubmissionFinder.get(`/submissionlist/${subid}`);
-        setSubs(response.data.data.sub);
+      const response = await SubmissionFinder.get(`/submissionlist/${subid}`);
+      setSubs(response.data.data.sub);
+      setSbid(subid)
     } catch (err) {
-        console.log(err)
+      console.log(err)
     }
+
+    setPreview(true)
+    setShowEdit(false)
   };
 
-  // useEffect(() => {
-  //     const getProfile = async () => {
-  //         try {
-  //           const res = await fetch("http://localhost:4400/profile", {
-  //             method: "GET",
-  //             headers: { token: localStorage.token }
-  //           });
-      
-  //           const parseData = await res.json();
-  //           setId(parseData.data.profile[0].userid);
+  const handleEditClick = async () => {
+    setPreview(false)
+    setShowEdit(true)
 
-  //         } catch (err) {
-  //           console.error(err.message);
-  //         }
-  //     };
-  //     getProfile();
+  }
 
-  // }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (title == '') {
+      setTitleError(true)
+    }
+    if(title){
 
-  // useEffect(() => {
-  //     const getInfo = async () => {
-  //       try {
-  //       const response = await ClassFinder.get(`/find/code/${id}`)
-  //       console.log(response)
-  //       setUserclasses(response.data.data.class);
-  //       } catch (err) {
-  //           console.error(err.message);
-  //       }
-  //     };
+      const updateSubmission = async() => {
+        try {
+          const response = await SubmissionFinder.put('/update', {sbid, title, date})
+        } catch (error) {
+          console.log(error)
+        }
+      }
 
-  //     if(id){
-  //         getInfo();
-  //     }
-
-  // }, [id]);
-
-  // useEffect(() => {
-  //   const fetchData = async (info) => {
-  //     try {
-  //       const response = await SubmissionFinder.get(`/${info}`)
-  //       if(response.data.data.sub.length !==0 ){
-  //         for (let i = 0; i < response.data.data.sub.length; i++) {
-  //           setLists(lists => [...lists, response.data.data.sub[i]])
-  //         }
-  //       }
-  //     } 
-  //     catch (err) {
-  //       console.log(err)
-  //     }
-  //   }
-
-  //   if(userclasses){
-  //     for (let i = 0; i < userclasses.length; i++) {
-  //       fetchData(userclasses[i].code)
-  //     }
-  //   }
-  
-  // },[userclasses]);
+      updateSubmission();
+    
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -159,6 +158,7 @@ const SubListTc = () => {
             <div key={list.subid}>
             <ListItem button onClick={()=>{handleClick(list.subid)}}>
               <ListItemText primary={list.title} />
+              {/* <Button variant="outlined" onClick={()=>{handleClickEdit(list.subid)}}>Edit</Button> */}
             </ListItem>
             <Divider />
             </div>
@@ -169,9 +169,7 @@ const SubListTc = () => {
             <TableHead>
             <TableRow>
                 <StyledTableCell>Name</StyledTableCell>
-                <StyledTableCell align="center">Class</StyledTableCell>
-                <StyledTableCell align="center">Subject</StyledTableCell>
-                <StyledTableCell align="center">Edit</StyledTableCell>
+                <StyledTableCell align="center">File</StyledTableCell>
                 <StyledTableCell align="center">Delete</StyledTableCell>
             </TableRow>
             </TableHead>
@@ -184,15 +182,69 @@ const SubListTc = () => {
                 <StyledTableCell align="center">
                   <Link href={`${sub.file}`} target="_blank" underline="hover" >{sub.filename}</Link>
                 </StyledTableCell>
-                <StyledTableCell align="center">{sub.filename}</StyledTableCell>
-                <StyledTableCell align="center">{sub.filename}</StyledTableCell>
-                <StyledTableCell align="center">{sub.filename}</StyledTableCell>
+                <StyledTableCell align="center"><Button variant="outlined" color="error"> Delete</Button></StyledTableCell>
                 </StyledTableRow>
             ))}
             </TableBody>
         </Table>
       </TableContainer>
+      {preview === true && (
+        <Button variant="contained" sx={{mt:2}} onClick={handleEditClick}>Edit</Button>
+      )}
+      {showEdit === true && (
+        <>
+        <Card  sx={{ mt: 2, p:2 }}>
+        <Typography
+          variant="body1" 
+          color="textSecondary"
+          component="h2"
+          gutterBottom
+        >
+          Edit Submission
+        </Typography>
+        
+        <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+          <TextField className={classes.field}
+            label="Title" 
+            variant="outlined" 
+            color="secondary" 
+            fullWidth
+            required
+            error={titleError}
+            helperText={titleError? "Empty Field": ""}
+            onChange={(e) => {
+              setTitle(e.target.value)
+              setTitleError(false)
+            }}
+            value={title}
+            // sx={{ mt: 2 }}
+          />
+          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePicker
+                  label="Date and Time"
+                  value={date}
+                  onChange={(newValue) => {
+                      setDate(newValue);
+                    }}
+                  renderInput={(params) => <TextField {...params} />}
+              />
+          </LocalizationProvider>
+          
+          <Button
+            type="submit" 
+            color="primary" 
+            variant="contained"
+            endIcon={<KeyboardArrowRightIcon />}>
+            Submit
+          </Button>
+          </Stack>
+        </form>
+        </Card>
+        </>
+      )}
     </Container>
+
   );
 }
  

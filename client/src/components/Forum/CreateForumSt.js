@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.black,
+      backgroundColor: '#0782cb',
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -57,14 +57,14 @@ const CreateForumSt = () => {
   const classes = useStyles();
   // let history = useHistory();
 
-  //Get profile
+  //Data
   const [id, setId] = useState();
   const [userclasses, setUserclasses] = useState();
   const [stclasses,setStclasses] = useState([]);
   const [lists, setLists] = useState([]);
   const [subCode, setSubCode] = useState([]);
 
-  //To display
+  //Input
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
   const [author, setAuthor] = useState();
@@ -75,6 +75,7 @@ const CreateForumSt = () => {
   //Error Handling
   const [titleError, setTitleError] = useState(false);
   const [detailsError, setDetailsError] = useState(false);
+  const [subjectError, setSubjectError] = useState(false);
   const [update, setUpdate] = useState(false);
 
   //Others
@@ -83,8 +84,8 @@ const CreateForumSt = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault()
-    setTitleError(false)
-    setDetailsError(false)
+    // setTitleError(false)
+    // setDetailsError(false)
 
     if (title == '') {
       setTitleError(true)
@@ -92,33 +93,21 @@ const CreateForumSt = () => {
     if (details == '') {
       setDetailsError(true)
     }
-    if (title && details) {
-      console.log(title, details)
+    if (code == '') {
+      setSubjectError(true)
     }
 
-    // for (let i = 0; i < userclasses.length; i++) {
-    //   if(userclasses[i].code === code){
-    //     setSubject(userclasses[i].subject)
-    //     setNameclass(userclasses[i].name)
-    //   }
-    // }
-
-    // for (let i = 0; i < lists.length; i++) {
-    //   if(lists[i].class === code){
-    //     setSubject(lists[i].subject)
-    //     setNameclass(lists[i].nameclass)
-    //   }
-    //   setUpdate(true);
-    // }
-
-    try {
-      const response = await ClassFinder.get(`/find/${code}`)
-      setNameclass(response.data.data.class[0].name)
-      setSubject(response.data.data.class[0].subject)
-      setUpdate(true);
-    } catch (err) {
-      console.log(err)
+    if (title && details && code) {
+      try {
+        const response = await ClassFinder.get(`/find/${code}`)
+        setNameclass(response.data.data.class[0].name)
+        setSubject(response.data.data.class[0].subject)
+        setUpdate(true);
+      } catch (err) {
+        console.log(err)
+      }
     }
+    
   }
 
   useEffect(() => {
@@ -229,7 +218,10 @@ const CreateForumSt = () => {
         </Typography>
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
             <TextField className={classes.field}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value)
+              setTitleError(false)
+            }}
             label="Title" 
             variant="outlined" 
             color="secondary" 
@@ -237,9 +229,13 @@ const CreateForumSt = () => {
             required
             sx={{ mb: 2 }}
             error={titleError}
+            helperText={titleError? "Empty Field": ""}
             />
             <TextField className={classes.field}
-            onChange={(e) => setDetails(e.target.value)}
+            onChange={(e) => {
+              setDetails(e.target.value)
+              setDetailsError(false)
+            }}
             label="Details"
             variant="outlined"
             color="secondary"
@@ -249,6 +245,7 @@ const CreateForumSt = () => {
             required
             sx={{ mb: 2 }}
             error={detailsError}
+            helperText={detailsError? "Empty Field": ""}
             />
 
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
@@ -259,7 +256,12 @@ const CreateForumSt = () => {
                 id="demo-simple-select"
                 value={code}
                 label="Class"
-                onChange={(e) => setCode(e.target.value)}
+                onChange={(e) => {
+                  setCode(e.target.value)
+                  setSubjectError(false)
+                }}
+                error={subjectError}
+                helperText={subjectError? "Empty Field": ""}
               >
                   {stclasses && stclasses.map((stclass,i) => 
                   {if(stclass.cod !== null)
@@ -278,7 +280,7 @@ const CreateForumSt = () => {
             </FormControl>
             <Button
               type="submit" 
-              color="secondary" 
+              color="primary" 
               variant="contained"
               // sx={{ mb: 3 }}
               endIcon={<KeyboardArrowRightIcon />}>

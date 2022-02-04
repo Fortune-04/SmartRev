@@ -13,13 +13,36 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
+import Modal from '@mui/material/Modal';
+import Stack from '@mui/material/Stack';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
 const ClassTeacher = ({id}) => {
 
     const [code, setCode] = useState();
     const [name, setName] = useState('');
     const [subject, setSubject] = useState('');
+
+    //Modal
+    const [open, setOpen] = useState(false);
+
+    //Error Handling
+    const [nameError, setNameError] = useState(false);
+    const [subjectError, setSubjectError] = useState(false);
     const [toupdate, setToupdate] = useState(false);
+
+    const handleClose = () => setOpen(false);
 
     const CodeGen = () => {
         let min = Math.ceil(1000);
@@ -30,8 +53,19 @@ const ClassTeacher = ({id}) => {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        setCode(CodeGen());
-        setToupdate(true);
+        if (name == '') {
+            setNameError(true)
+        }
+        if (subject == '') {
+            setSubjectError(true)
+        }
+      
+        if( name && subject){
+            setCode(CodeGen());
+            setToupdate(true);
+        } 
+
+        
     }
 
     useEffect(() => {
@@ -57,12 +91,38 @@ const ClassTeacher = ({id}) => {
         if(toupdate === true){
             createClass();
             setToupdate(false);
+            setOpen(true)
         }
 
     }, [code])
 
     return ( 
         <Container component="main" maxWidth="xs">
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                <Stack 
+                    direction="column"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    spacing={2}
+                >
+                    <Typography sx={{ mt: 2 }}>
+                        You have created a class!
+                    </Typography>
+                    <Typography sx={{ mt: 2 }}>
+                        Your Code : {code}
+                    </Typography>
+                    <Button onClick={handleClose} variant="contained">
+                        Ok
+                    </Button>
+                </Stack>
+                </Box>
+            </Modal>
             <Box 
                 display="flex" 
                 height={700} 
@@ -86,7 +146,12 @@ const ClassTeacher = ({id}) => {
                             label="Class Name"
                             name="name"
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            error={nameError}
+                            helperText={nameError? "Empty Field": ""}
+                            onChange={(e) => {
+                                setName(e.target.value)
+                                setNameError(false)
+                            }}
                         />
                     </CardContent>
                     <CardContent>
@@ -97,7 +162,11 @@ const ClassTeacher = ({id}) => {
                                 id="subject"
                                 value={subject}
                                 label="Subject"
-                                onChange={(e) => setSubject(e.target.value)}
+                                error={subjectError}
+                                onChange={(e) => {
+                                    setSubject(e.target.value)
+                                    setNameError(false)
+                                }}
                                 >
                                 <MenuItem value={"mathematics"}>Mathematics</MenuItem>
                                 <MenuItem value={"physics"}>Physics</MenuItem>

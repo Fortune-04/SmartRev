@@ -48,19 +48,30 @@ const CreateSub = ({id}) => {
   const [code, setCode] = useState('');
 
   //Error Handling
+  const [titleError, setTitleError] = useState(false);
+  const [codeError, setCodeError] = useState(false);
   const [update, setUpdate] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-        
-      for (let i = 0; i < userclasses.length; i++) {
-          if(userclasses[i].code === code){
-              setSubject(userclasses[i].subject)
-              setNameclass(userclasses[i].name)
-          }
-      }
 
-    setUpdate(true);
+    if (title == '') {
+      setTitleError(true)
+    }
+    if (code == '') {
+      setCodeError(true)
+    }
+
+    if( title && date && code){
+      for (let i = 0; i < userclasses.length; i++) {
+        if(userclasses[i].code === code){
+            setSubject(userclasses[i].subject)
+            setNameclass(userclasses[i].name)
+        }
+      }
+      setUpdate(true);
+    }  
+      
   }
 
   useEffect(() => {
@@ -137,9 +148,12 @@ const CreateSub = ({id}) => {
                   color="secondary" 
                   fullWidth
                   required
+                  error={titleError}
+                  helperText={titleError? "Empty Field": ""}
                   onChange={(e) => {
-                      setTitle(e.target.value);
-                    }}
+                    setTitle(e.target.value)
+                    setTitleError(false)
+                  }}
                   value={title}
                   sx={{ mb: 2 }}
                   // error={titleError}
@@ -165,7 +179,12 @@ const CreateSub = ({id}) => {
                   id="demo-simple-select"
                   value={code}
                   label="Class"
-                  onChange={(e) => setCode(e.target.value)}
+                  onChange={(e) => {
+                    setCode(e.target.value)
+                    setCodeError(false)
+                  }}
+                  error={codeError}
+                helperText={codeError? "Empty Field": ""}
                 >
                   {userclasses && userclasses.map(userclass => (
                       <MenuItem key={userclass.classid} value={userclass.code}>{userclass.name}</MenuItem>
@@ -175,7 +194,7 @@ const CreateSub = ({id}) => {
               
               <Button
                 type="submit" 
-                color="secondary" 
+                color="primary" 
                 variant="contained"
                 // sx={{ mb: 3 }}
                 endIcon={<KeyboardArrowRightIcon />}>

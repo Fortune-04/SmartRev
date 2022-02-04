@@ -18,17 +18,20 @@ import Profile from "./components/Profile/Profile";
 import Video from "./components/Video/Video";
 import Videos from "./components/Video/Videos"
 import VideoAdd from "./components/Video/VideoAdd";
-import Note from "./components/Note/Note";
-import NoteUpload from "./components/Note/UploadNote";
+// import Note from "./components/Note/Note";
+// import NoteUpload from "./components/Note/UploadNote";
 import Notes from "./components/Note/Notes"
-import NoteClass from "./components/Note/ClassNote2";
+import NoteClass from "./components/Note/ClassNote";
 import Quiz from "./components/Quiz/Quiz";
 import QuizList from "./components/Quiz/QuizList"
 import QuizAnswer from "./components/Quiz/AnswerQuiz";
 import QuizCreate from "./components/Quiz/CreateQuiz";
 import QuizEdit from './components/Quiz/EditQuiz';
-import Quizes from './components/Quiz/Quizes';
+import Quizes from './components/Quiz/Quizes5.js';
+import Quizes3 from './components/Quiz/Quizes3';
+import Quizes4 from './components/Quiz/Quizes4';
 import QuizSummary from './components/Quiz/QuizSummary';
+import QuizSummary2 from './components/Quiz/QuizSummary2';
 import Forum from './components/Forum/Forum';
 import ForumDesc from "./components/Forum/ForumDesc";
 import ForumCreateTc from "./components/Forum/CreateForumTc";
@@ -44,7 +47,7 @@ import SubmissionSubmit from "./components/Submission/SubmissionFile";
 import SubmissionFile1 from "./components/Submission/SubmissionFile1";
 import SubDecs from "./components/Submission/SubDecs";
 import Class from "./components/Class/Class";
-import Temp from "./Temp";
+// import Temp from "./components/Other/Temp";
 
 
 const theme = createTheme({
@@ -114,12 +117,14 @@ const App = () => {
 
                             {/* Quiz */}
                             <Route exact path="/quiz" component={Quiz}/>
-                            <Route exact path="/quiz/quizlist" component={QuizList}/>
+                            <Route exact path="/quiz/quizlist/:code/:sub" component={QuizList}/>
                             <Route exact path="/quiz/answer" component={QuizAnswer}/>
                             <Route exact path="/quiz/create" component={QuizCreate}/>
                             <Route exact path="/quiz/edit/:qid" component={QuizEdit}/>
                             <Route exact path="/quiz/quizsummary" component={QuizSummary}/>
-                            {/* <Route exact path="/quiz/test" component={Quizes}/> */}
+                            <Route exact path="/quiz/quizsummary2" component={QuizSummary2}/>
+                            <Route exact path="/quiz/quizes3/:id" component={Quizes3}/>
+                            <Route exact path="/quiz/quizes4/:id/:subject" component={Quizes4}/>
 
                             {/* Flashcard */}
                             <Route exact path="/flashcard" component={Flashcard}/>
@@ -138,8 +143,7 @@ const App = () => {
                             
                             {/* Note */}
                             <Route exact path="/note" component={Notes}/>
-                            <Route exact path="/note/classtc/:code" component={NoteClass}/>
-                            {/* <Route exact path="/note" component={NoteUpload}/> */}
+                            <Route exact path="/note/class/:id/:role/:subject/:classname/:code" component={NoteClass}/>
 
                             {/* Chat */}
                             <Route exact path="/chat" component={Chat}/>

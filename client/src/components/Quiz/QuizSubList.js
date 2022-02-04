@@ -1,46 +1,43 @@
 import React, {useState, useEffect} from 'react';
-import QuizFinder from './apis/QuizFinder';
-import { useHistory } from 'react-router';
+import { useParams } from "react-router-dom";
+import QuizFinder from '../../apis/QuizFinder';
 
+//Material UI
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Link from '@mui/material/Link';
 
-const Temp3 = ({id}) => {
+const QuizSubList = () => {
 
-    let history = useHistory();
+    const {code} = useParams();
+
+    //Output
     const [quizes, setQuizes] = useState([]);
-
-    const createQuiz = () => {
-        history.push(`/quiz/create`)
-    }
+    const [subject, setSubject] = useState('')
     
     useEffect(() => {
         
         const fetchQuiz = async () => {
             try {
-                const response = await QuizFinder.get(`/display/${id}`)
+                const response = await QuizFinder.get(`/class/${code}`)
                 setQuizes(response.data.data.quiz)
+                setSubject(response.data.data.quiz[0].subject)
                 console.log(response)
               } catch (err) {
                 console.log(err)
             }
         }
 
-        if(id){
+        if(code){
             fetchQuiz();
         }
         
-    },[id])
-
-    console.log(quizes)
-    console.log(id)
+    },[code])
 
     return ( 
         <Container size="sm">
@@ -50,19 +47,19 @@ const Temp3 = ({id}) => {
                 component="h2"
                 gutterBottom
             >
-                Quiz List
+                {subject.charAt(0).toUpperCase()+subject.slice(1)}
             </Typography>
             <Divider />
             <Grid container sx={{mt:1}} spacing={2}>
             {quizes && quizes.map(quiz => (
                 // <Grid item xs={12} md={6} lg={3} sx={{mt:2}} key={quiz.quizid} >
-                <Grid item lg={3} md={3} xs={3}>
-                    <Link href={`http://localhost:3000/quiz/edit/${quiz.quizid}`} key={quiz.quizid} underline="none">
+                <Grid item lg={3} md={3} xs={3} key={quiz.quizid}>
+                    <Link href={`http://localhost:3000/quiz/quizes4/${quiz.quizid}/${quiz.subject}`}  underline="none">
                         <Card elevation={3} >
                             <CardMedia
                                 component="img"
                                 height="200"
-                                image="math-card-background.jpg"
+                                image="/math-card-background.jpg"
                                 alt="mathematics"
                             />
                             <CardContent>
@@ -76,16 +73,8 @@ const Temp3 = ({id}) => {
                 
             ))}
             </Grid>
-            <Button
-                color="secondary" 
-                variant="contained"
-                onClick={createQuiz}
-                sx={{ mt: 2 }}
-                >
-                Create Quiz
-            </Button>
         </Container>
     );
 }
  
-export default Temp3;
+export default QuizSubList;

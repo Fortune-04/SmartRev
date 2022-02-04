@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 import questions from '../../JSON/questions.json';
 import isEmpty from '../../utils/is-empty';
 import classnames from 'classnames';
-import './Quiz.css';
+// import './Quiz.css';
 
 
 class Quiz extends Component{

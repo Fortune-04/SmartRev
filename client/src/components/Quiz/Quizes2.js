@@ -30,7 +30,7 @@ const useStyles = makeStyles (() => {
     }
 })
 
-const Quizes2 = () => {
+const Quizes2 = (props) => {
 
     let history = useHistory()
 
@@ -53,6 +53,9 @@ const Quizes2 = () => {
     const [prevButtonDisabled, setPrevButtonDisabled] = useState(true);
     const [time, setTime] = useState({});
     const interval = null
+
+    //test
+    const [test, setTest] = useState(5)
 
     useEffect(() => {
         displayQuest(currentQuest, nextQuest, prevQuest);
@@ -139,7 +142,7 @@ const Quizes2 = () => {
         setNumberOfAnsweredQuest(numberOfAnsweredQuest+1);
 
             if(nextQuest === undefined){
-                // endGame();
+                endGame();
             } else{
                 displayQuest(questions, currentQuest, nextQuest, prevQuest);
             }
@@ -154,7 +157,7 @@ const Quizes2 = () => {
         setNumberOfAnsweredQuest(numberOfAnsweredQuest+1);
 
             if(nextQuest === undefined){
-                // endGame();
+                endGame();
             }else{
                 displayQuest(questions, currentQuest, nextQuest, prevQuest);
             }
@@ -174,9 +177,28 @@ const Quizes2 = () => {
         }
     }
 
-    console.log(questions)
-    console.log(currentQuestIndex)
-    console.log(answer)
+    const endGame = () => {
+        alert('Quiz has ended!');
+        // const playerStats ={
+        //     score: state.score,
+        //     numberOfQuest: state.numberOfQuest,
+        //     numberOfAnsweredQuest: state.numberOfAnsweredQuest,
+        //     correctAnswer: state.correctAns,
+        //     wrongAns: state.wrongAns
+        // };
+        // console.log(playerStats);
+        setTimeout(() => {
+            history.push({ 
+                pathname: '/quiz/quizsummary2',
+                state: {score}
+            });
+        }, 1000)
+    }
+
+    // console.log(questions)
+    // console.log(currentQuestIndex)
+    // console.log(answer)
+    console.log(score)
 
     return (
         <Container maxWidth="md">

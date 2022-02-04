@@ -6,9 +6,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 import UploadNote from "./UploadNote";
-import ClassNote from "./ClassNote";
-import Temp from "../../Temp";
-import Temp2 from "../../Temp2";
+import ClassListNote from "./ClassListNote";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -85,15 +83,10 @@ const SubList = () => {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Temp id={id}/>
-        {/* <UploadNote/> */}
-        
-        
+        <UploadNote id={id}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {/* <UploadNote/> */}
-        {/* <ClassNote id={id} role={role}/> */}
-        <Temp2 id={id}/>
+        <ClassListNote id={id} role={role}/>
       </TabPanel>
     </Box>
     

@@ -155,7 +155,7 @@ const ProfileSt = (props) =>{
                     mb: 3
                   }}
                 >
-                  <BarChartPerform/>
+                  <BarChartPerform id={id}/>
                 </Paper>
                 <Paper 
                   sx={{ 
@@ -165,7 +165,7 @@ const ProfileSt = (props) =>{
                     height: 400
                   }}
                 >
-                  <BarChartScore/>
+                  <BarChartScore id={id}/>
                 </Paper>
               </Grid>
           </Grid>

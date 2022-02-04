@@ -23,7 +23,7 @@ const SubTable = ({code}) => {
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
       [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.common.black,
+        backgroundColor: '#0782cb',
         color: theme.palette.common.white,
       },
       [`&.${tableCellClasses.body}`]: {
@@ -56,7 +56,7 @@ const SubTable = ({code}) => {
     }
   },[code]);
   
-  console.log(code)
+  console.log(subs)
 
   return ( 
     <Container size="sm">
@@ -66,6 +66,7 @@ const SubTable = ({code}) => {
                     <TableRow>
                         <StyledTableCell>Title</StyledTableCell>
                         <StyledTableCell align="center">Date</StyledTableCell>
+                        <StyledTableCell align="center">Time</StyledTableCell>
                     </TableRow>
                     </TableHead>
                     <TableBody>
@@ -74,7 +75,8 @@ const SubTable = ({code}) => {
                         <StyledTableCell component="th" scope="row">
                         <Link href={`http://localhost:3000/submission/subdecs/${sub.subid}`} underline="hover" >{sub.title}</Link>
                         </StyledTableCell>
-                        <StyledTableCell align="center">{sub.duedate}</StyledTableCell>
+                        <StyledTableCell align="center">{sub.date}</StyledTableCell>
+                        <StyledTableCell align="center">{sub.time}</StyledTableCell>
                         </StyledTableRow>
                     ))}
                     </TableBody>

@@ -6,7 +6,7 @@ import FlashcardFinder from '../../apis/FlashcardFinder';
 //Material UI
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
+import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -22,6 +22,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
+    // height: 500,
     bgcolor: 'background.paper',
     // border: '2px solid #000',
     boxShadow: 24,
@@ -47,6 +48,10 @@ const FlashcardCreate = () => {
     const [currentFcSelected, setCurrentFcSelected] = useState(null);
     const [showNextButton, setShowNextButton] = useState(true);
     const [showPrevButton, setShowPrevButton] = useState(false);
+
+    //Error Handling
+    const [contentError, setContentError] = useState(false);
+    const [errorText, setErrorText] = useState(false)
     
     //Modal
     const handleOpen = () => {
@@ -59,7 +64,6 @@ const FlashcardCreate = () => {
         
     }
     const handleClose = () => setOpen(false);
-
 
     const handleNextButton = () => {
         if(currentFcIndex == contents.length-1){
@@ -93,23 +97,32 @@ const FlashcardCreate = () => {
     }
 
     const onSubmitForm = async (e) => {
-        // e.preventDefault()
-        try {
-            const body = {userid, subject, content};
-            const response = await fetch(
-                "http://localhost:4400/flashcard",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-type": "application/json"
-                  },
-                  body: JSON.stringify(body)
-                }
-            );
-            console.log(response);
-            
-        } catch (err) {
-            console.error(err.message);
+        e.preventDefault()
+
+        if(content == ''){
+            setContentError(true)
+            setErrorText(true)
+        }
+
+        if(content){
+            try {
+                const body = {userid, subject, content};
+                const response = await fetch(
+                    "http://localhost:4400/flashcard",
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-type": "application/json"
+                      },
+                      body: JSON.stringify(body)
+                    }
+                );
+                console.log(response);
+                
+            } catch (err) {
+                console.error(err.message);
+            }
+            // setRender(true);
         }
     }
 
@@ -179,7 +192,7 @@ const FlashcardCreate = () => {
                 }}
                 >
                 <Typography component="h1" variant="h5">
-                    Create Flashcard
+                    {subject.charAt(0).toUpperCase()+subject.slice(1)}
                 </Typography>
                 {/* <Button onClick={handleOpen}>Open modal</Button> */}
                 <Modal
@@ -188,37 +201,22 @@ const FlashcardCreate = () => {
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >  
-                    <Box sx={style}>
+                    <Box 
+                        sx={style} 
+                    >
                         <Stack 
                             direction="row"
                             justifyContent="space-between"
                             alignItems="center"
                             spacing={2}>
-                            {/* {showPrevButton? <IconButton>
-                                <ArrowBackIosOutlinedIcon onClick={handlePrevButton} sx={{ fontSize: 40 }}/>
-                            </IconButton> : 
-                            <IconButton>
-                                <ArrowBackIosOutlinedIcon disabled sx={{ fontSize: 40 }}/>
-                            </IconButton>
-                            } */}
                             <IconButton>
                                 <ArrowBackIosOutlinedIcon onClick={handlePrevButton} sx={{ fontSize: 40 }}/>
                             </IconButton>
                             {open === true && (
-                            <Typography id="modal-modal-title" variant="h6" component="h2">
-                                {contents[currentFcIndex].content}
-                            </Typography>)}
-                            {/* {contents && <Typography id="modal-modal-title" variant="h6" component="h2">
-                                {contents[currentFcIndex].content}
-                            </Typography>} */}
-                            {/* {showNextButton? 
-                            <IconButton>
-                                <ArrowForwardIosOutlinedIcon onClick={handleNextButton} sx={{ fontSize: 40 }}/>
-                            </IconButton>:
-                            <IconButton>
-                                <ArrowForwardIosOutlinedIcon disabled sx={{ fontSize: 40 }}/>
-                            </IconButton>
-                            } */}
+                                <Typography id="modal-modal-title" variant="h6" component="h2">
+                                    {contents[currentFcIndex].content}
+                                </Typography>)
+                            }
                             <IconButton>
                                 <ArrowForwardIosOutlinedIcon onClick={handleNextButton} sx={{ fontSize: 40 }}/>
                             </IconButton>
@@ -226,24 +224,35 @@ const FlashcardCreate = () => {
                         </Stack>
                     </Box>
                 </Modal>
-                <Box component="form" noValidate onSubmit={onSubmitForm} sx={{ mt: 3 }}>
-                    {/* <Grid container spacing={2}> */}
+                <Box component="form" noValidate onSubmit={onSubmitForm} sx={{ mt: 1 }}>
                     <Grid item xs={12}>
-                        <TextareaAutosize
+                        <TextField
+                        label="Content"
                         fullWidth
                         required
                         value={content}
-                        minRows={4}
+                        multiline
+                        rows={4}
                         style={{width:300}}
-                        onChange={(e) => setAnycontents(e.target.value)}
+                        error={contentError}
+                        helperText={errorText? "Empty Field": ""}
+                        inputProps={{
+                            maxlength: 35
+                        }}
+                        onChange={(e) => {
+                            setAnycontents(e.target.value)
+                            setErrorText(false)
+                            setContentError(false)
+                            }
+                        }
                         />
-                    </Grid>  
-                    {/* </Grid> */}
+                    </Grid>
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mb: 1 }}
+                        color="primary"
+                        sx={{ mb: 1 , mt: 1}}
                     >
                     Create Flashcard
                     </Button>
@@ -251,7 +260,7 @@ const FlashcardCreate = () => {
                         fullWidth
                         variant="contained"
                         sx={{ mb: 4 }}
-                        color="secondary"
+                        color="primary"
                         onClick={handleOpen}
                     >
                         View

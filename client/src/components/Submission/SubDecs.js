@@ -111,7 +111,7 @@ const SubDecs = () => {
                     bgcolor: '#e1f5fe',
                     }}
                 >
-                    <Typography>Due Date &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: {detail.duedate}</Typography>
+                    <Typography>Due Date &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: {detail.date}</Typography>
                     {/* <Typography sx={{flexGrow: 1}}>2 December 2021</Typography> */}
                 </Box>
                 <Box
@@ -123,7 +123,7 @@ const SubDecs = () => {
                     bgcolor: '#b3e5fc',
                     }}
                 >
-                    <Typography>Time Remaining &nbsp; &nbsp;&nbsp;: 7 days</Typography>
+                    <Typography>Time &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;: {detail.time}</Typography>
                     {/* <Typography sx={{flexGrow: 1}}>2 December 2021</Typography> */}
                 </Box>
                 <Box
@@ -135,7 +135,7 @@ const SubDecs = () => {
                     bgcolor: '#e1f5fe',
                     }}
                 >
-                    {status? <Typography>Submission Status : Done </Typography> : <Typography>Submission Status : Not available </Typography>}
+                    {status? <Typography>Submission Status : Done </Typography> : <Typography>Submission Status : Not Available </Typography>}
                     {/* <Typography sx={{flexGrow: 1}}>2 December 2021</Typography> */}
                 </Box>
                 </div>

@@ -41,13 +41,14 @@ const EditQuiz = () =>{
     const [nameclass, setNameclass] = useState('');
 
     //Input to question
-    const [quizid, setQuizid] = useState();
+    // const [quizid, setQuizid] = useState();
     const [questList, setQuestList] = useState([]);
     // const [questList, setQuestList] = useState([{quest:"", option1:"", option2:"", option3:"", option4:"", answer:""}]);
 
     //Error handling
     const [update, setUpdate] = useState(false);
     const [addStatus, setAddStatus] = useState(false);
+    const [addNewQuest, setAddNewQuest] = useState(false);
 
     const handleSubmit = async (e) =>{
         e.preventDefault()
@@ -135,34 +136,48 @@ const EditQuiz = () =>{
 
         if(addStatus === true){
 
+            try {
+                const response = await QuizFinder.delete(`/delete/quest/${qid}`)
+                console.log(response);
+            } catch (err) {
+                console.error(err.message);
+            }
+            setAddStatus(false);
+            setAddNewQuest(true);
+        }
+        
+    },[addStatus]);
+
+    useEffect( async () => {
+
+        if(addNewQuest === true){
+
             for (let i = 0; i < questList.length; i++){
 
                 try {
+                    const quizid = qid;
                     const quest = questList[i];
-                    // const body = {quizid, quest};
-                    const response = await QuizFinder.put("/question/update",{
-                        id,quest
-                    })
-                    // const response = await fetch(
-                    //     "http://localhost:4400/quiz/create/question",
-                    //     {
-                    //       method: "POST",
-                    //       headers: {
-                    //         "Content-type": "application/json"
-                    //       },
-                    //       body: JSON.stringify(body)
-                    //     }
-                    // );
+                    const body = {quizid, quest};
+                    const response = await fetch(
+                        "http://localhost:4400/quiz/create/question",
+                        {
+                          method: "POST",
+                          headers: {
+                            "Content-type": "application/json"
+                          },
+                          body: JSON.stringify(body)
+                        }
+                    );
                     console.log(response);
                     
                 } catch (err) {
                     console.error(err.message);
                 }
             }
-            setAddStatus(false);
+            setAddNewQuest(false);
         }
         
-    },[addStatus]);
+    },[addNewQuest]);
 
     useEffect( async () => {
         
@@ -196,9 +211,9 @@ const EditQuiz = () =>{
     }, [])
 
     console.log(questList);
-    console.log(quizid);
-    console.log(title);
-    console.log(code);
+    // console.log(quizid);
+    // console.log(title);
+    // console.log(code);
 
     return(
         <Container size="sm">
@@ -247,7 +262,7 @@ const EditQuiz = () =>{
                         <Card sx={{ mb: 2, p: 2 }} key={index}>
                             <TextField className={classes.field}
                                 
-                                label="Question 1"
+                                label="Question"
                                 variant="outlined"
                                 color="secondary"
                                 multiline
