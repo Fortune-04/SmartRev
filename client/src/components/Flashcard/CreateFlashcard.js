@@ -22,7 +22,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    // height: 500,
+    height: 300,
     bgcolor: 'background.paper',
     // border: '2px solid #000',
     boxShadow: 24,
@@ -97,9 +97,10 @@ const FlashcardCreate = () => {
     }
 
     const onSubmitForm = async (e) => {
-        e.preventDefault()
+        
 
         if(content == ''){
+            e.preventDefault()
             setContentError(true)
             setErrorText(true)
         }
@@ -204,11 +205,13 @@ const FlashcardCreate = () => {
                     <Box 
                         sx={style} 
                     >
-                        <Stack 
+                        <Stack
+                            sx={{mt:10}}
                             direction="row"
                             justifyContent="space-between"
                             alignItems="center"
                             spacing={2}>
+                            
                             <IconButton>
                                 <ArrowBackIosOutlinedIcon onClick={handlePrevButton} sx={{ fontSize: 40 }}/>
                             </IconButton>

@@ -14,6 +14,8 @@ import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
+import { blue } from '@mui/material/colors';
 
 const useStyles = makeStyles (() => {
     return{
@@ -152,16 +154,15 @@ const Quizes3 = () => {
                     direction="row"
                     justifyContent="space-between"
                     alignItems="center"
-                    sx={{mb: 5}}>
-
-                    <Typography> {currentQuestionIndex+1}/{questions.length} </Typography>
+                    sx={{mb: 2}}>
+                    <Avatar sx={{ bgcolor: blue[500] }}><Typography> {currentQuestionIndex+1}/{questions.length} </Typography></Avatar>
                     {/* <Typography> 2:30</Typography> */}
                 </Stack>
-                <Card className={classes.card} variant="outlined">
-                    <CardContent>
-                    <Typography> {questions[currentQuestionIndex]?.quest}</Typography>
+                {/* <Card className={classes.card} variant="outlined"> */}
+                    <CardContent sx={{mb: 4}}>
+                        <Typography variant="h5"> {questions[currentQuestionIndex]?.quest}</Typography>
                     </CardContent>
-                </Card>
+                {/* </Card> */}
             </>
         )
     }
@@ -271,18 +272,37 @@ const Quizes3 = () => {
         {/* ProgressBar */}
         {/* renderProgressBar() */}
 
-        {/* Question */}
-        {renderQuestion()}
+        <Box
+            display="flex" 
+            height={800} 
+            // bgcolor="lightblue"
+        >
+            <Box m="auto">
+            <Card sx={{p:2}} variant="outlined" style={{backgroundColor: "#e4f2f7"}}>
+            {/* Question */}
+            {renderQuestion()}
 
-        {/* Options */}
-        {renderOptions()}
+            {/* Options */}
+            {renderOptions()}
+            
+            <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+                mt={4}
+            >
+                <Button variant="contained" color="error" onClick={handleButtonQuit}>
+                    Quit
+                </Button>
+                {/* Next Button */}
+                {renderNextButton()}
+            </Stack>
+            </Card>
 
-        {/* Next Button */}
-        {renderNextButton()}
-
-        <Button variant="contained" color="error" onClick={handleButtonQuit}>
-            Quit
-        </Button>
+            </Box>
+        </Box>
+        
         </>
     )
 }

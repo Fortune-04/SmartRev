@@ -131,7 +131,7 @@ const QuizSummary2 = (props) => {
                 // bgcolor="lightblue"
             >
                 <Box m="auto">
-                    <Card variant="outlined">
+                    <Card variant="outlined" style={{backgroundColor: "#e4f2f7"}}>
                         <Box m="auto" sx={{p:5}}>
                             <Stack
                                 direction="column"

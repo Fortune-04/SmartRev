@@ -226,7 +226,7 @@ const ProfileTc = () =>{
                                 <ListItemText primary={userclass.name} />
                                 <Typography>Class Code{<DoubleArrowIcon color="primary"/>}</Typography>
                                 <ListItemText primary={userclass.code} />
-                                <Typography>Class Code{<DoubleArrowIcon color="primary"/>}</Typography>
+                                <Typography>Subject{<DoubleArrowIcon color="primary"/>}</Typography>
                                 <ListItemText primary={userclass.subject.charAt(0).toUpperCase()+userclass.subject.slice(1)} />
                             </ListItem>
                         </Card>
@@ -248,7 +248,7 @@ const ProfileTc = () =>{
                             <TableRow>
                                 <StyledTableCell>Name</StyledTableCell>
                                 <StyledTableCell align="center">Email</StyledTableCell>
-                                <StyledTableCell align="center">Phone Number</StyledTableCell>
+                                <StyledTableCell align="center">Score</StyledTableCell>
                                 <StyledTableCell align="center">Action</StyledTableCell>
                             </TableRow>
                             </TableHead>
@@ -260,7 +260,7 @@ const ProfileTc = () =>{
                                 {student.fullname}
                                 </StyledTableCell>
                                 <StyledTableCell align="center">{student.email}</StyledTableCell>
-                                <StyledTableCell align="center">{student.phonenumber}</StyledTableCell>
+                                <StyledTableCell align="center">{student.score}</StyledTableCell>
                                 <StyledTableCell align="center"><Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(student.userid)}>Remove</Button></StyledTableCell>
                                 </StyledTableRow>
                             ))}
