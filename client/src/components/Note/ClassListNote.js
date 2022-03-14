@@ -169,15 +169,15 @@ const ClassListNote = ({id, role}) => {
                 {userclasses && userclasses.map(userclass => (
                     <Grid item xs={3} key={userclass.classid}>
                         <Link href={`http://localhost:3000/note/class/${id}/${role}/${userclass.subject}/${userclass.name}/${userclass.code}`} underline="none">
-                        <Card sx={{ maxWidth: 345 }} >
+                        <Card sx={{ maxWidth: 345 }} elevation={6} >
                             <CardMedia
                                 component="img"
                                 height="200"
-                                image="math-card-background.jpg"
-                                alt="mathematics"
+                                image="note.png"
+                                alt="note"
                             />
-                            <CardContent>
-                                <Typography variant="h5">
+                            <CardContent style={{backgroundColor: "#bbdefb"}}>
+                                <Typography variant="h5" >
                                     {userclass.name}
                                 </Typography>
                             </CardContent>

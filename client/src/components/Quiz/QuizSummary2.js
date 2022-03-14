@@ -30,8 +30,11 @@ const QuizSummary2 = (props) => {
     const numberOfQuestion = location.state.numberOfQuestion;
     const subject = location.state.subject
 
+    //Error Handling
+    const [update, setUpdate] = useState(false)
+
     useEffect(() => {
-        if(score){
+        if(score && update === true){
 
             if(score === 0){
                 setNewMark(0);
@@ -40,7 +43,7 @@ const QuizSummary2 = (props) => {
             }
             
         }
-    }, [score]);
+    }, [score, update]);
 
     useEffect(() => {
         if(newMark){
@@ -73,21 +76,29 @@ const QuizSummary2 = (props) => {
             const parseData = await res.json();
             setId(parseData.data.profile[0].userid);
                 if(subject === "mathematics"){
-                    if(parseData.data.profile[0].mathscore !== 0){
+                    if(parseData.data.profile[0].mathscore !== null){
                         setPrevMark(parseData.data.profile[0].mathscore)
+                        
                     }
+                    setUpdate(true)
                 }else if(subject === "physics"){
-                    if(parseData.data.profile[0].physicsscore !== 0){
+                    if(parseData.data.profile[0].physicsscore !== null){
                         setPrevMark(parseData.data.profile[0].physicsscore)
+                        
                     }
+                    setUpdate(true)
                 }else if(subject === "chemistry"){
-                    if(parseData.data.profile[0].chemistryscore !== 0){
+                    if(parseData.data.profile[0].chemistryscore !== null){
                         setPrevMark(parseData.data.profile[0].chemistryscore)
+                        
                     }
+                    setUpdate(true)
                 }else if(subject === "biology"){
-                    if(parseData.data.profile[0].biologyscore !== 0){
+                    if(parseData.data.profile[0].biologyscore !== null){
                         setPrevMark(parseData.data.profile[0].biologyscore)
+                        
                     }
+                    setUpdate(true)
                 }
     
             } catch (err) {
@@ -97,15 +108,37 @@ const QuizSummary2 = (props) => {
         getProfile();
     }, []);
 
+    // useEffect(() => {
+    //     if(prevMark && newMark){
+    //         if(prevMark !== null){
+    //             setMark((prevMark + newMark)/2)
+    //         }else {
+    //             setMark(newMark)
+    //         }
+    //     }
+    // }, [prevMark, newMark]);
+
+    // useEffect(() => {
+    //     if(newMark){
+    //         if(prevMark !== null || prevMark !== undefined){
+    //             setMark((prevMark + newMark)/2)
+    //             console.log("lalu")
+    //         }else {
+    //             setMark(newMark)
+    //         }
+    //     }
+    // }, [newMark]);
+
     useEffect(() => {
-        if(prevMark && newMark){
-            if(prevMark !== 0){
+        if(newMark){
+            if(prevMark !==0){
                 setMark((prevMark + newMark)/2)
+                console.log("lalu")
             }else {
                 setMark(newMark)
             }
         }
-    }, [prevMark, newMark]);
+    }, [newMark]);
 
     useEffect(async() => {
 
@@ -119,9 +152,9 @@ const QuizSummary2 = (props) => {
 
     }, [mark, id, subject]);
 
-    console.log(prevMark)
-    console.log(newMark)
-    console.log(mark)
+    console.log("prevMark = ",prevMark)
+    console.log("newMark =",newMark)
+    console.log("mark= ",mark)
 
     return (
         <Container maxWidth="md">
@@ -131,7 +164,7 @@ const QuizSummary2 = (props) => {
                 // bgcolor="lightblue"
             >
                 <Box m="auto">
-                    <Card variant="outlined" style={{backgroundColor: "#e4f2f7"}}>
+                    <Card  elevation={8}>
                         <Box m="auto" sx={{p:5}}>
                             <Stack
                                 direction="column"

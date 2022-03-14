@@ -10,6 +10,7 @@ import Container from '@mui/material/Container';
 import CardMedia from '@mui/material/CardMedia';
 import Divider from '@mui/material/Divider';
 import Link from '@mui/material/Link';
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 
 const QuizSubList = ({sub}) => {
 
@@ -47,7 +48,7 @@ const QuizSubList = ({sub}) => {
                 component="h2"
                 gutterBottom
             >
-                {subject.charAt(0).toUpperCase()+subject.slice(1)}
+                <AutoAwesomeMotionIcon sx={{ width: 30, height: 30 }} color="secondary"/> {subject.charAt(0).toUpperCase()+subject.slice(1)} <AutoAwesomeMotionIcon sx={{ width: 30, height: 30 }} color="secondary"/>
             </Typography>
             <Divider />
             <Grid container sx={{mt:1}} spacing={2}>
@@ -59,10 +60,10 @@ const QuizSubList = ({sub}) => {
                             <CardMedia
                                 component="img"
                                 height="200"
-                                image="/math-card-background.jpg"
-                                alt="mathematics"
+                                image="/quizes.jpg"
+                                alt="quizes"
                             />
-                            <CardContent>
+                            <CardContent >
                                 <Typography variant="body" color="textSecondary">
                                     {quiz.title}
                                 </Typography>

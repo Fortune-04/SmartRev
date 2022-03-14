@@ -55,9 +55,9 @@ const BarChart = ({id}) => {
                         minBarLength: 2,
                         data: [math, phy, chem, bio],
                         backgroundColor: [
-                            'rgba( 255, 0, 0, 0.5)',
-                            'rgba( 0, 0, 0, 0.5)',
-                            'rgba(97, 70, 46, 0.5)',
+                            'rgba( 255, 0, 0, 0.8)',
+                            'rgba( 0, 0, 0, 0.8)',
+                            'rgba(97, 70, 46, 0.8)',
                             'rgba(0, 128, 0, 0.5)',
                         ],
                     }]

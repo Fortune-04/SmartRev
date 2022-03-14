@@ -122,7 +122,8 @@ const menuItemsTc = [
 const useStyles = makeStyles((theme) => {
     return{
         page: {
-            background: '#f9f9f9',
+            // background: '#f9f9f9',
+            background: '#e4f2f7',
             width: '100%',
             padding: theme.spacing(3),
         },

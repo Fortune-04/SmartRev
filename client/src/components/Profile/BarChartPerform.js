@@ -308,9 +308,9 @@ const BarChartPerform = ({id}) => {
                         minBarLength: 2,
                         data: [displayScore, contScore2, involveScore2 ],
                         backgroundColor: [
-                            'rgba( 34, 139, 34, 1)',
-                            'rgba(255, 205, 57, 1)',
-                            'rgba(97, 70, 46, 1)',
+                            'rgba(25,25,112, 0.8)',
+                            'rgba(255,69,0, 0.8)',
+                            'rgba(105,105,105, 0.8)',
                           ],
                     }]
                 }}

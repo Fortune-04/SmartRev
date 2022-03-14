@@ -130,9 +130,9 @@ const ClassTeacher = ({id}) => {
                 onSubmit={handleSubmit}
             >
                 <Box m="auto">
-                <Card variant="outlined" sx={{p:5}}>
+                <Card sx={{p:3}} elevation={8}>
                     <CardContent >
-                        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
                             Create Class
                         </Typography>
                     </CardContent>

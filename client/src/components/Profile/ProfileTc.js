@@ -220,7 +220,7 @@ const ProfileTc = () =>{
                 >
                     <List sx={style} component="nav" aria-label="mailbox folders">
                     {userclasses && userclasses.map(userclass => (
-                        <Card key={userclass.classid}>
+                        <Card key={userclass.classid} elevation={8} >
                             <ListItem button onClick={()=>{handleClick(userclass.code, userclass.subject)}}>
                                 <Typography>Class Name{<DoubleArrowIcon color="primary"/>}</Typography>
                                 <ListItemText primary={userclass.name} />
@@ -249,7 +249,9 @@ const ProfileTc = () =>{
                                 <StyledTableCell>Name</StyledTableCell>
                                 <StyledTableCell align="center">Email</StyledTableCell>
                                 <StyledTableCell align="center">Score</StyledTableCell>
-                                <StyledTableCell align="center">Action</StyledTableCell>
+                                <StyledTableCell align="center">Contribution</StyledTableCell>
+                                <StyledTableCell align="center">Involvement</StyledTableCell>
+                                {/* <StyledTableCell align="center">Action</StyledTableCell> */}
                             </TableRow>
                             </TableHead>
                             <TableBody>
@@ -260,8 +262,10 @@ const ProfileTc = () =>{
                                 {student.fullname}
                                 </StyledTableCell>
                                 <StyledTableCell align="center">{student.email}</StyledTableCell>
-                                <StyledTableCell align="center">{student.score}</StyledTableCell>
-                                <StyledTableCell align="center"><Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(student.userid)}>Remove</Button></StyledTableCell>
+                                <StyledTableCell align="center">{parseFloat(student.score).toFixed(2)}</StyledTableCell>
+                                <StyledTableCell align="center">{parseFloat(student.contribution).toFixed(2)}</StyledTableCell>
+                                <StyledTableCell align="center">{parseFloat(student.involvement).toFixed(2)}</StyledTableCell>
+                                {/* <StyledTableCell align="center"><Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(student.userid)}>Remove</Button></StyledTableCell> */}
                                 </StyledTableRow>
                             ))}
                             </TableBody>

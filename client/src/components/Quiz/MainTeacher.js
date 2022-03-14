@@ -96,13 +96,13 @@ const MainTeacher = ({id}) => {
             {quizes && quizes.map(quiz => (
                 // <Grid item xs={12} md={6} lg={3} sx={{mt:2}} key={quiz.quizid} >
                 <Grid item lg={3} md={3} xs={3} key={quiz.quizid}>
-                    <Card elevation={3} >
+                    <Card elevation={4} >
                         <Link href={`http://localhost:3000/quiz/edit/${quiz.quizid}`}  underline="none">
                         <CardMedia
                             component="img"
                             height="200"
-                            image="math-card-background.jpg"
-                            alt="mathematics"
+                            image="quizes.jpg"
+                            alt="quizes"
                         />
                         <CardContent>
                             <Typography variant="body" color="textSecondary">

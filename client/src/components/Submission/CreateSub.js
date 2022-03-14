@@ -139,6 +139,7 @@ const CreateSub = ({id}) => {
           >
               Create Submission
           </Typography>
+          <Card sx={{p: 3, mb:4}}>
           <form noValidate autoComplete="off" onSubmit={handleSubmit}>
               {/* <FormControl component="fieldset"> */}
                   <TextField className={classes.field}
@@ -160,7 +161,7 @@ const CreateSub = ({id}) => {
                   />
               {/* </FormControl> */}
 
-              <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+              <Stack direction="row" spacing={2}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DateTimePicker
                       label="Date and Time"
@@ -202,19 +203,20 @@ const CreateSub = ({id}) => {
               </Button>
               </Stack>
           </form>
+          </Card>
 
           <Grid container spacing={3}>
           {userclasses && userclasses.map(userclass => (
             <Grid item xs={3}>
               <Link href={`http://localhost:3000/submission/sublisttc/${userclass.code}`} underline="none">
-              <Card key={userclass.classid} sx={{ maxWidth: 345 }}>
+              <Card key={userclass.classid} sx={{ maxWidth: 345 }} elevation={8}>
                   <CardMedia
                       component="img"
                       height="200"
-                      image="math-card-background.jpg"
-                      alt="mathematics"
+                      image="submit.jpg"
+                      alt="submission"
                   />
-                  <CardContent>
+                  <CardContent style={{backgroundColor : "#bbdefb"}}>
                       <Typography variant="h5">
                         {userclass.name}
                       </Typography>

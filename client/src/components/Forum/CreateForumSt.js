@@ -23,6 +23,7 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Stack from '@mui/material/Stack';
 import Link from '@mui/material/Link';
+import Card from '@mui/material/Card';
 
 const useStyles = makeStyles({
     field: {
@@ -83,17 +84,20 @@ const CreateForumSt = () => {
   const todayDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
 
   const handleSubmit = async(e) => {
-    e.preventDefault()
+    
     // setTitleError(false)
     // setDetailsError(false)
 
     if (title == '') {
+      e.preventDefault()
       setTitleError(true)
     }
     if (details == '') {
+      e.preventDefault()
       setDetailsError(true)
     }
     if (code == '') {
+      e.preventDefault()
       setSubjectError(true)
     }
 
@@ -216,6 +220,7 @@ const CreateForumSt = () => {
         >
             Create Forum
         </Typography>
+        <Card sx={{p: 3, mb:2}}>
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
             <TextField className={classes.field}
             onChange={(e) => {
@@ -248,7 +253,7 @@ const CreateForumSt = () => {
             helperText={detailsError? "Empty Field": ""}
             />
 
-            <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+            <Stack direction="row" spacing={2} >
             <FormControl sx={{minWidth: 120 }}>
             <InputLabel id="demo-simple-select-label">Subject</InputLabel>
               <Select
@@ -288,6 +293,7 @@ const CreateForumSt = () => {
             </Button>
             </Stack>
         </form>
+        </Card>
 
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">

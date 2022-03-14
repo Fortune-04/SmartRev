@@ -26,6 +26,7 @@ import Stack from '@mui/material/Stack';
 import Link from '@mui/material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Card from '@mui/material/Card';
 
 const useStyles = makeStyles({
     field: {
@@ -210,6 +211,7 @@ const VideoAdd = (props) => {
           >
               Create Video
           </Typography>
+          <Card sx={{p: 3, mb:2}}>
           <form noValidate autoComplete="off" onSubmit={handleSubmit}>
               <TextField className={classes.field}
               onChange={(e) => {
@@ -242,7 +244,7 @@ const VideoAdd = (props) => {
               helperText={linkError? "Empty Field": ""}
               />
 
-              <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+              <Stack direction="row" spacing={2}>
               <FormControl sx={{minWidth: 120 }}>
               <InputLabel id="demo-simple-select-label">Class</InputLabel>
                 <Select
@@ -272,6 +274,7 @@ const VideoAdd = (props) => {
               </Button>
               </Stack>
           </form>
+          </Card>
 
           <TableContainer component={Paper}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -280,7 +283,7 @@ const VideoAdd = (props) => {
                       <StyledTableCell>Title</StyledTableCell>
                       <StyledTableCell align="center">Class</StyledTableCell>
                       <StyledTableCell align="center">Subject</StyledTableCell>
-                      <StyledTableCell align="center">Edit</StyledTableCell>
+                      {/* <StyledTableCell align="center">Edit</StyledTableCell> */}
                       <StyledTableCell align="center">Delete</StyledTableCell>
                   </TableRow>
                   </TableHead>
@@ -293,7 +296,7 @@ const VideoAdd = (props) => {
                       </StyledTableCell>
                       <StyledTableCell align="center">{list.nameclass}</StyledTableCell>
                       <StyledTableCell align="center">{list.subject}</StyledTableCell>
-                      <StyledTableCell align="center"><Button variant="outlined" color="secondary" startIcon={<EditIcon />} >Edit</Button></StyledTableCell>
+                      {/* <StyledTableCell align="center"><Button variant="outlined" color="secondary" startIcon={<EditIcon />} >Edit</Button></StyledTableCell> */}
                       <StyledTableCell align="center"><Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(list.videoid)}>Delete</Button></StyledTableCell>
                       </StyledTableRow>
                   ))}

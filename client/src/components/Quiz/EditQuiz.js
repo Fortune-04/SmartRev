@@ -16,6 +16,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { connectStorageEmulator } from "firebase/storage";
 
 const useStyles = makeStyles({
     field: {
@@ -117,13 +118,13 @@ const EditQuiz = () =>{
     }, [id]);
 
     useEffect( async () => {
+        let classcode = parseInt(code)
         if(update === true){
             try {
                 const response = await QuizFinder.put("/update",{
-                    id, title, code, subject, nameclass 
+                    qid, title, classcode, subject, nameclass 
                 })
                 console.log(response)
-                // setQuizid(response.data.data.quiz.quizid);
             } catch (err) {
                 console.error(err.message);
             }

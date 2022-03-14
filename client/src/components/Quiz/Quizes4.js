@@ -278,7 +278,7 @@ const Quizes3 = () => {
             // bgcolor="lightblue"
         >
             <Box m="auto">
-            <Card sx={{p:2}} variant="outlined" style={{backgroundColor: "#e4f2f7"}}>
+            <Card sx={{p:2}}  style={{backgroundColor: "#e4f2f7"}} elevation={4}>
             {/* Question */}
             {renderQuestion()}
 

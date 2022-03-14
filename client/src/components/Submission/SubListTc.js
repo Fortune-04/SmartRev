@@ -170,7 +170,7 @@ const SubListTc = () => {
             <TableRow>
                 <StyledTableCell>Name</StyledTableCell>
                 <StyledTableCell align="center">File</StyledTableCell>
-                <StyledTableCell align="center">Delete</StyledTableCell>
+                {/* <StyledTableCell align="center">Delete</StyledTableCell> */}
             </TableRow>
             </TableHead>
             <TableBody>
@@ -182,7 +182,7 @@ const SubListTc = () => {
                 <StyledTableCell align="center">
                   <Link href={`${sub.file}`} target="_blank" underline="hover" >{sub.filename}</Link>
                 </StyledTableCell>
-                <StyledTableCell align="center"><Button variant="outlined" color="error"> Delete</Button></StyledTableCell>
+                {/* <StyledTableCell align="center"><Button variant="outlined" color="error"> Delete</Button></StyledTableCell> */}
                 </StyledTableRow>
             ))}
             </TableBody>

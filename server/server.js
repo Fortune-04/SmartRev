@@ -98,7 +98,7 @@ app.get("/profile/:code/:subject", async (req, res) =>{
     console.log(req.params.code);
     console.log(req.params.subject);
 
-    if(req.params.subject === "math"){
+    if(req.params.subject === "mathematics"){
         try{
             const results = await db.query(`SELECT * FROM users WHERE math = $1`, [req.params.code]);
             res.status(200).json({
@@ -481,7 +481,7 @@ app.put("/quiz/update", async (req, res) => {
 
     try{
         const results = await db.query("UPDATE quiz SET title=$1, class=$2, subject=$3, nameclass=$4 WHERE quizid=$5", 
-        [req.body.title, req.body.class, req.body.subject, req.body.nameclass, req.body.id]);
+        [req.body.title, req.body.classcode, req.body.subject, req.body.nameclass, req.body.qid]);
         console.log(results);
 
         res.status(200).json({
@@ -813,7 +813,8 @@ app.delete("/flashcard/:id", async (req, res) => {
 app.post("/forum/create", async(req, res) => {
 
     try {
-        const results = await db.query("INSERT INTO forum (title, details, author, date, class, nameclass, subject) values ($1,$2,$3,$4,$5,$6,$7)", [req.body.title, req.body.details, req.body.author, req.body.todayDate, req.body.code, req.body.nameclass, req.body.subject])
+        const results = await db.query("INSERT INTO forum (title, details, author, date, class, nameclass, subject) values ($1,$2,$3,$4,$5,$6,$7)", 
+        [req.body.title, req.body.details, req.body.author, req.body.todayDate, req.body.code, req.body.nameclass, req.body.subject])
         console.log(results);
         
     } catch (err) {
@@ -1196,7 +1197,8 @@ app.put("/note/update", async (req, res) => {
 app.post("/submission/create", async(req, res) => {
 
     try {
-        const results = await db.query("INSERT INTO submission (userid, title, subject, class, nameclass, duedate) values ($1,$2,$3,$4,$5,$6)", [req.body.id, req.body.title, req.body.subject, req.body.code, req.body.nameclass, req.body.date]);
+        const results = await db.query("INSERT INTO submission (userid, title, subject, class, nameclass, duedate) values ($1,$2,$3,$4,$5,$6)", 
+        [req.body.id, req.body.title, req.body.subject, req.body.code, req.body.nameclass, req.body.date]);
         console.log(results);
         
     } catch (err) {
